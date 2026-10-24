@@ -1,0 +1,159 @@
+/* SET-OUT v3 — an open field.
+ *
+ * v1 and v2 drew a gapless four-bay frame with rails running the full height of
+ * every section. It was measured and mathematically exact, and it was also the
+ * single thing that made every page look identical no matter what changed
+ * inside it. All three reference sites the owner supplied draw zero borders:
+ *
+ *   Kern    0 borders   2 columns, 20px gap, 1400px container
+ *   Halo    0 borders   2 columns, 40px gap, 1320px container
+ *   Hanssen 0 borders   2 columns, 12px gap
+ *
+ * They build structure from generous gaps, image edges and type poles instead.
+ * This file does the same. Rules survive only inside genuine data — the
+ * register table and the spec rows — where removing them would make the content
+ * unreadable rather than more open.
+ */
+
+.page,
+.grid {
+  inline-size: min(100% - var(--frame-inset) * 2, var(--frame-max));
+  margin-inline: auto;
+}
+
+/* Twelve columns because the content needs 2-, 3- and 4-up splits; the
+   references only ever needed 2. The gap is the structure. */
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gap);
+  row-gap: var(--gap-row);
+}
+
+.grid + .grid { margin-block-start: var(--gap-row); }
+
+.col-full { grid-column: 1 / -1; }
+.col-half { grid-column: span 6; }
+.col-third { grid-column: span 4; }
+.col-quarter { grid-column: span 3; }
+.col-two-thirds { grid-column: span 8; }
+
+/* Running text keeps a readable measure rather than filling the frame. */
+.col-text { grid-column: 1 / span 6; max-inline-size: var(--measure); }
+.col-content { grid-column: 1 / span 7; }
+.col-label { grid-column: 1 / span 2; }
+
+/* ── Section ───────────────────────────────────────────────────────────────
+   No border, no rail. Bands are separated by space, which is why the space is
+   large: 100px at 1440, the value both Kern and Halo use. */
+
+.section {
+  position: relative;
+  isolation: isolate;
+  padding-block: var(--section-y);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.section--tight { padding-block: var(--section-y-tight); }
+/* Flush is about the BOTTOM edge — the band's media runs into the next band
+   with no gap, which is how the map meets the enquiry form. The top is a normal
+   section start: the band still opens with a label, and at zero padding that
+   label sat hard against the edge of the band above it, which is the one place
+   on the site where two bands touched without space between them. */
+.section--flush { padding-block: var(--section-y) 0; }
+
+/* ── Two-pole band ─────────────────────────────────────────────────────────
+   Display flush left, lead and action flush right, a wide unfilled interval
+   between them. Halo runs this on bare white with no rule at all: the two type
+   poles describe the frame width by themselves. */
+
+.section__title { grid-column: 1 / span 8; }
+
+.section__lead {
+  grid-column: 10 / -1;
+  align-self: end;
+  text-align: right;
+  text-wrap: pretty;
+}
+
+/* Past ~200 characters a lead is body copy, and body copy set right-aligned in
+   a narrow column is harder to read, not more composed — see isPoleLead(). */
+.section__lead--long {
+  grid-column: 1 / span 6;
+  align-self: start;
+  max-inline-size: var(--measure);
+  margin-block-start: var(--s-7);
+  text-align: start;
+}
+
+.section__mega { grid-column: 1 / -1; }
+.section__more { margin-block-start: var(--s-9); }
+
+/* ── Section label ─────────────────────────────────────────────────────────
+   Was a full-height Jeftoni-blue rail in the outer gutter, which is where 0.78%
+   of the page's painted area went. It is now Halo's device: a small stacked
+   label at the head of the band, in the flow, consuming no gutter and no bay.
+   Blue is reserved for the index marker on the current section. */
+
+.section-label {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-4);
+  margin-block-end: var(--s-8);
+  color: var(--fg-muted);
+}
+
+.section-label__index {
+  color: var(--fg-muted);
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-state) var(--ease-out);
+}
+
+.section-label[data-current] .section-label__index { color: var(--c-blue); }
+[data-surface="ink"] .section-label[data-current] .section-label__index { color: var(--c-paper-high); }
+
+/* The only free-standing rule left in the system, and only where a band change
+   would otherwise be ambiguous. Not used by default. */
+.rule {
+  grid-column: 1 / -1;
+  block-size: var(--rule-size);
+  border: 0;
+  background: var(--rule);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 74.99rem) {
+  .col-half, .col-third, .col-quarter { grid-column: span 6; }
+  .col-two-thirds, .col-content, .col-text { grid-column: 1 / -1; }
+  .col-text { max-inline-size: var(--measure); }
+
+  .section__title { grid-column: 1 / -1; }
+  .section__lead { grid-column: 7 / -1; margin-block-start: var(--s-7); }
+  .section__lead--long { grid-column: 1 / -1; }
+}
+
+@media (max-width: 47.99rem) {
+  .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+  .col-full, .col-half, .col-third, .col-quarter, .col-two-thirds,
+  .col-content, .col-text, .col-label,
+  .section__title, .section__lead, .section__lead--long, .section__mega,
+  .section-label { grid-column: 1 / -1; }
+
+  /* One column: both poles go flush left. */
+  .section__lead {
+    align-self: start;
+    margin-block-start: var(--s-6);
+    text-align: start;
+  }
+
+  .section-label { margin-block-end: var(--s-6); }
+
+  /* Mega wraps rather than clipping — an overflowing display is a defect. */
+  .t-mega { white-space: normal; text-wrap: balance; }
+}

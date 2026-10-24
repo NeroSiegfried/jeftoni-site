@@ -1,0 +1,268 @@
+/* SET-OUT — reset, local fonts, and typographic roles. */
+
+/* Both subsets are variable fonts carrying a full 100-900 wght axis. The range
+   below was 400 500, which clamped an axis the file already had; widening it to
+   400 600 gives the display its weight and fetches nothing extra. Exactly two
+   weights are used - see design-language.md section 6.
+
+   The URLs are relative to this stylesheet, not the domain root, so the fonts
+   still resolve when the asset folders are served from a subpath (a GitHub
+   Pages project site for Wix Route A). site/build.mjs makes them absolute
+   where this CSS is inlined into a page. */
+@font-face {
+  font-family: "Inter Tight";
+  src: url("../fonts/inter-tight-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../fonts/geist-mono-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-block-start: calc(var(--nav-h) + var(--s-4)); }
+html, body { overflow-x: clip; }
+/* No overscroll. Kills the rubber-band at the top and bottom of the page and
+   stops a scroll that reaches the end of the document from chaining anywhere
+   else — the bounce reads as the page coming loose from its own frame. */
+html { overscroll-behavior: none; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-sans);
+  font-size: var(--t-body);
+  font-weight: var(--w-regular);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, picture, video, canvas, svg, iframe { display: block; max-inline-size: 100%; }
+[hidden] { display: none !important; }
+input, button, textarea, select { font: inherit; color: inherit; }
+fieldset { min-inline-size: 0; padding: 0; border: 0; }
+legend { padding: 0; }
+button { border-radius: var(--radius); }
+p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
+h1, h2, h3, h4, h5, h6 { overflow-wrap: normal; }
+ul, ol { list-style: none; padding: 0; }
+a { color: inherit; text-decoration: none; }
+b, strong, th { font-weight: var(--w-medium); }
+
+:focus-visible {
+  outline: var(--focus-size) solid var(--focus-ring);
+  outline-offset: var(--s-1);
+}
+:focus:not(:focus-visible) { outline: none; }
+::selection { background: var(--c-blue); color: var(--c-paper-high); }
+
+/* Frame-fitted display. The generator emits --fit: the exact width of this
+   string in em, summed from the real per-glyph advances of the display weight
+   and including the tracking below. CSS only divides the frame by it, so the
+   line's optical edges land on the frame rails at every viewport with no media
+   query. See sections.mjs megaFit() and site/mega-metrics.json. */
+.mega { container-type: inline-size; }
+
+.t-mega {
+  /* Fallback for engines without container query units: the frame width
+     expressed against the viewport rather than against the parent. */
+  font-size: min(
+    calc((100vw - var(--frame-inset) * 2) / var(--fit, 7)),
+    var(--t-mega-cap)
+  );
+  /* Exact: 100cqw is the .mega wrapper's own inline size, so the line fits
+     whatever span it was given, not an assumed one. */
+  font-size: min(calc(100cqw / var(--fit, 7)), var(--t-mega-cap));
+  display: block;
+  font-weight: var(--w-display);
+  line-height: var(--lh-mega);
+  letter-spacing: var(--ls-mega);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.t-display {
+  max-inline-size: var(--measure-display);
+  font-size: var(--t-display);
+  font-weight: var(--w-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+  text-wrap: balance;
+}
+
+.t-h1 {
+  font-size: var(--t-h1);
+  font-weight: var(--w-display);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--ls-h1);
+  text-wrap: balance;
+}
+
+.t-h2 {
+  font-size: var(--t-h2);
+  font-weight: var(--w-display);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--ls-h2);
+  text-wrap: balance;
+}
+
+.t-h3 {
+  font-size: var(--t-h3);
+  font-weight: var(--w-display);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--ls-h3);
+}
+
+.t-lead {
+  max-inline-size: var(--measure-lead);
+  color: var(--fg-secondary);
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+  letter-spacing: var(--ls-lead);
+}
+
+.t-body { max-inline-size: var(--measure); }
+.t-sm { font-size: var(--t-small); }
+
+.t-label {
+  font-size: var(--t-data);
+  font-weight: var(--w-medium);
+  line-height: var(--lh-data);
+  letter-spacing: var(--ls-data);
+}
+
+.t-micro {
+  font-size: var(--t-micro);
+  font-weight: var(--w-medium);
+  line-height: var(--lh-data);
+  letter-spacing: var(--ls-data);
+  text-transform: uppercase;
+}
+
+.t-muted { color: var(--fg-muted); }
+.t-secondary { color: var(--fg-secondary); }
+.t-num {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.u-visually-hidden {
+  position: absolute;
+  inline-size: var(--rule-size);
+  block-size: var(--rule-size);
+  padding: 0;
+  margin: calc(var(--rule-size) * -1);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  inset-block-start: var(--s-2);
+  inset-inline-start: var(--s-2);
+  z-index: var(--z-modal);
+  padding: var(--s-3) var(--s-5);
+  background: var(--c-ink);
+  color: var(--c-paper);
+  font-size: var(--t-micro);
+  letter-spacing: var(--ls-data);
+  text-transform: uppercase;
+  transform: translateY(-200%);
+  transition: transform var(--dur-state) var(--ease-out);
+}
+.skip-link:focus-visible { transform: none; }
+
+.main { padding-block-start: var(--nav-h); }
+body[data-hero-nav] .main { padding-block-start: 0; }
+[id] { scroll-margin-block-start: calc(var(--nav-h) + var(--s-5)); }
+
+@media (max-width: 47.99rem) {
+  html { scroll-padding-block-start: calc(var(--nav-h-mobile) + var(--s-4)); }
+  .t-display { font-size: var(--t-display-mobile); }
+  .main { padding-block-start: var(--nav-h-mobile); }
+  [id] { scroll-margin-block-start: calc(var(--nav-h-mobile) + var(--s-5)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: var(--dur-fast) !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: var(--dur-fast) !important;
+  }
+
+  /* The spotlight is a state change, not motion, so it stays — but it resolves
+     immediately rather than crossfading, and nothing translates. */
+  .arw { transition: none !important; }
+  .strip { scroll-behavior: auto; scroll-snap-type: none; }
+}
+
+/* ── Page transitions ──────────────────────────────────────────────────────
+ * A cross-document view transition: the browser holds the outgoing page,
+ * loads the next one, and crossfades between the two snapshots. This is the
+ * "one major transition" design-language.md §9 permits a route to spend, and
+ * it costs nothing to the pages themselves — no router, no JavaScript, no
+ * intercepted clicks. A browser without it simply navigates, which is what
+ * this site did before.
+ *
+ * Two named parts come out of the crossfade so the shell stays put while the
+ * page under it changes: the nav bar and the footer are the same object either
+ * side of a navigation and should not be seen to move. Only the content lifts.
+ *
+ * Duration is deliberately under the Scene token: at 900ms a navigation reads
+ * as waiting. 420ms in, 200ms out — long enough to connect the two pages,
+ * short enough that it never sits between the visitor and the content.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+@view-transition { navigation: auto; }
+
+.nav { view-transition-name: site-nav; }
+.footer { view-transition-name: site-footer; }
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: page-leave 200ms var(--ease-out) both; }
+  ::view-transition-new(root) { animation: page-enter 420ms var(--ease-out) both; }
+
+  /* The shell holds still. It still crossfades — the active-route marker in the
+     bar genuinely differs between the two pages — but at link speed, and with
+     no travel. */
+  ::view-transition-old(site-nav),
+  ::view-transition-new(site-nav),
+  ::view-transition-old(site-footer),
+  ::view-transition-new(site-footer) { animation-duration: var(--dur-fast); }
+  ::view-transition-group(site-nav),
+  ::view-transition-group(site-footer) { animation-duration: var(--dur-fast); }
+}
+
+@keyframes page-leave { to { opacity: 0; } }
+@keyframes page-enter { from { opacity: 0; transform: translateY(var(--reveal-travel)); } }
+
+/* Browsers with no view transitions get the same arrival, without the
+   departure — a plain entrance fade on the content. Opacity only: a transform
+   here would make .main a containing block and break the sticky ledger. It is
+   pure CSS, so it can never strand the page mid-fade the way a scripted
+   transition can if the next document is slow. */
+@supports not (view-transition-name: none) {
+  @media (prefers-reduced-motion: no-preference) {
+    .main { animation: page-fade var(--dur-reveal) var(--ease-out) both; }
+    @keyframes page-fade { from { opacity: 0; } }
+  }
+}
+
+/* Reduced motion opts out of the transition entirely rather than shortening it:
+   a crossfade between two whole pages is exactly the effect the preference
+   exists to suppress. */
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}

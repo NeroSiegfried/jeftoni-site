@@ -1,0 +1,355 @@
+{
+  "$generated": "scripts/media-build.mjs — do not edit by hand",
+  "photos": {
+    "marine-barge-spread": {
+      "w": 3130,
+      "h": 1746,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Piling spread on a barge, Niger Delta",
+      "alt": "Aerial view of a lattice-boom crane and a blue tracked piling rig working from a moored barge on a wide river, a village on the far bank"
+    },
+    "marine-pile-heads": {
+      "w": 3120,
+      "h": 1748,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Completed pile heads standing out of the water",
+      "alt": "Eight completed cased piles standing out of a river with reinforcement bars projecting from each head, the piling barge moored behind them"
+    },
+    "marine-casing-lift": {
+      "w": 3106,
+      "h": 1750,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Steel casing pitched over the barge deck",
+      "alt": "A steel pile casing suspended from a crane hook over a barge deck while crew in hard hats steady it, a blue piling rig alongside"
+    },
+    "leads-and-casings": {
+      "w": 5712,
+      "h": 4284,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Piling leads and pitched casings",
+      "alt": "A crawler crane with piling leads raised beside pitched steel casings, a service crane and truck alongside on a gravel platform"
+    },
+    "rig-and-crane-sky": {
+      "w": 5712,
+      "h": 4284,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Rig and service crane under cumulus",
+      "alt": "A tracked piling rig and a yellow service crane working beneath tall cumulus cloud, steel pile sections laid out on the ground"
+    },
+    "casings-pitched": {
+      "w": 5712,
+      "h": 4284,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Casings pitched, crew at the toe",
+      "alt": "Crew sheltering under a blue umbrella at the toe of two pitched steel casings while a yellow service crane holds them upright"
+    },
+    "blue-rig-blue-sky": {
+      "w": 5712,
+      "h": 4284,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Blue crawler rig against clear sky",
+      "alt": "A blue crawler piling rig and a yellow service crane holding a steel pile vertical against a clear blue sky, palms on the horizon"
+    },
+    "yard-overhead": {
+      "w": 4000,
+      "h": 2250,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "The equipment yard from overhead",
+      "alt": "Overhead drone view of the equipment yard: crawler cranes, a piling rig, stacked steel sections, shipping containers and a line of trees"
+    },
+    "operator-in-cab": {
+      "w": 2880,
+      "h": 3600,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Operator in the cab, yard",
+      "alt": "An operator in orange coveralls and a white hard hat seated at the controls of a crawler crane, a second crew member passing in the foreground"
+    },
+    "crew-notes": {
+      "w": 2880,
+      "h": 3600,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Two crew over a notebook",
+      "alt": "Two crew members in orange coveralls and hard hats reading notes together beside the tracks of a crawler crane in the yard"
+    },
+    "crew-profile": {
+      "w": 2880,
+      "h": 3600,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Crew member, yard in the rain",
+      "alt": "A crew member in orange high-visibility coveralls and a white hard hat seen in profile, wheeled cranes standing on wet ground behind"
+    },
+    "crew-directing": {
+      "w": 2880,
+      "h": 3600,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Directing work across the yard",
+      "alt": "A crew member in orange coveralls pointing across the yard while two colleagues look on, a wheel loader and crane behind them"
+    },
+    "crew-containers": {
+      "w": 3600,
+      "h": 2880,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Crew conferring by the containers",
+      "alt": "Three crew members in orange coveralls conferring in front of shipping containers, a yellow mobile crane and wheel loader behind"
+    },
+    "crew-under-leads": {
+      "w": 2880,
+      "h": 3600,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Crew beneath the drop-hammer leads",
+      "alt": "Three crew members in orange coveralls and white hard hats standing beneath a crane boom and drop-hammer leads, one pointing off frame"
+    },
+    "crew-drawing": {
+      "w": 2880,
+      "h": 3600,
+      "widths": [
+        480,
+        768,
+        1024,
+        1440,
+        1920,
+        2560
+      ],
+      "caption": "Reading a drawing on site",
+      "alt": "Three crew members in orange coveralls reading a drawing together beneath a lattice crane boom, piling leads standing behind them"
+    },
+    "auger-and-casing": {
+      "w": 1320,
+      "h": 2316,
+      "widths": [
+        480,
+        768,
+        1024,
+        1320
+      ],
+      "caption": "Auger clear of the bore, casing set",
+      "alt": "A rotary rig lifting a soil-filled auger clear of the bore beside a set steel casing, crew working at ground level"
+    }
+  },
+  "videos": {
+    "yard-aerial": {
+      "w": 1280,
+      "h": 720,
+      "duration": 12.08,
+      "posters": [
+        480,
+        768,
+        1024,
+        1280
+      ],
+      "bytes": 1463810,
+      "small": 514327,
+      "mode": "ambient",
+      "audio": false,
+      "caption": "The equipment yard, from the air",
+      "alt": "Aerial footage descending over the equipment yard: a large yellow rotary piling rig, a blue and white crawler crane, an excavator and crew at work"
+    },
+    "rig-orbit": {
+      "w": 1280,
+      "h": 720,
+      "duration": 12.08,
+      "posters": [
+        480,
+        768,
+        1024,
+        1280
+      ],
+      "bytes": 1449643,
+      "small": 578280,
+      "mode": "ambient",
+      "audio": false,
+      "caption": "Piling spread, from the air",
+      "alt": "Aerial footage orbiting a red lattice-boom crane rigged with piling leads, with a service crane, stacked steel and containers around it"
+    },
+    "company-film": {
+      "w": 1280,
+      "h": 720,
+      "duration": 24.01,
+      "posters": [
+        480,
+        768,
+        1024,
+        1280
+      ],
+      "bytes": 3223944,
+      "small": null,
+      "mode": "feature",
+      "audio": true,
+      "caption": "Jeftoni — the yard and the crews",
+      "alt": "A short film of Jeftoni plant and crews: operators at the controls, rigs under the yard canopy, and engineers reviewing drawings on site"
+    },
+    "bored-pile-drilling": {
+      "w": 640,
+      "h": 1138,
+      "duration": 12.08,
+      "posters": [
+        480,
+        640
+      ],
+      "bytes": 1448808,
+      "small": null,
+      "mode": "clip",
+      "audio": false,
+      "caption": "Boring under a rotary rig",
+      "alt": "A red rotary piling rig turning an auger into saturated ground while two crew in coveralls watch from the pile position"
+    },
+    "cfa-auger-spoil": {
+      "w": 640,
+      "h": 1138,
+      "duration": 12.08,
+      "posters": [
+        480,
+        640
+      ],
+      "bytes": 1560973,
+      "small": null,
+      "mode": "clip",
+      "audio": false,
+      "caption": "Auger withdrawn, spoil turning",
+      "alt": "Close footage of a continuous-flight auger being withdrawn from a bore in heavy rain, wet spoil turning up the flights"
+    },
+    "casing-concrete": {
+      "w": 640,
+      "h": 1138,
+      "duration": 6.08,
+      "posters": [
+        480,
+        640
+      ],
+      "bytes": 753509,
+      "small": null,
+      "mode": "clip",
+      "audio": false,
+      "caption": "Cased pile lifted clear",
+      "alt": "A mobile crane lifting a concrete-filled steel casing clear of the ground while a crew member in orange coveralls watches from the pile position"
+    },
+    "diesel-hammer": {
+      "w": 640,
+      "h": 1138,
+      "duration": 11.08,
+      "posters": [
+        480,
+        640
+      ],
+      "bytes": 1522495,
+      "small": null,
+      "mode": "clip",
+      "audio": false,
+      "caption": "Diesel hammer driving",
+      "alt": "A red diesel impact hammer firing in the leads of a crawler crane, each blow throwing a plume of exhaust across the site"
+    },
+    "nck-rapier": {
+      "w": 640,
+      "h": 1138,
+      "duration": 10.64,
+      "posters": [
+        480,
+        640
+      ],
+      "bytes": 603631,
+      "small": null,
+      "mode": "clip",
+      "audio": false,
+      "caption": "NCK Rapier and pitched piles",
+      "alt": "An NCK Rapier crawler crane standing with pitched steel piles against a bright sky of broken cloud, reflected in standing water"
+    }
+  }
+}

@@ -1,0 +1,206 @@
+/* ========================================================================
+   SET-OUT — Jeftoni design tokens
+   Approved 1 August 2026. This file is the only source of visual values.
+   ======================================================================== */
+
+:root {
+  /* Colour */
+  --c-ink: #111418;
+  --c-ink-high: #090B0E;
+  --c-paper: #F1F0EB;
+  --c-paper-high: #FAF9F6;
+  --c-paper-low: #E8E7E1;
+  --c-steel: #666963;
+  --c-rule: #B8B9B3;
+  --c-blue: #282A88;
+  --c-white: #FFFFFF;
+  --c-transparent: rgb(0 0 0 / 0);
+  --c-rule-ink: rgb(241 240 235 / 0.22);
+  --c-rule-photo: rgb(255 255 255 / 0.34);
+  --c-copy-inverse: rgb(241 240 235 / 0.76);
+  --c-copy-muted-inverse: rgb(241 240 235 / 0.58);
+  --c-nav-photo: rgb(17 20 24 / 0.72);
+  --c-scrim-top: linear-gradient(to bottom, rgb(17 20 24 / 0.68), rgb(17 20 24 / 0));
+  --c-scrim-bottom: linear-gradient(to top, rgb(17 20 24 / 0.82), rgb(17 20 24 / 0) 72%);
+
+  /* Semantic colour */
+  --bg: var(--c-paper);
+  --bg-raised: var(--c-paper-high);
+  --fg: var(--c-ink);
+  --fg-secondary: var(--c-steel);
+  --fg-muted: var(--c-steel);
+  --rule: var(--c-rule);
+  --accent: var(--c-blue);
+  --focus-ring: var(--c-blue);
+
+  /* Type */
+  --f-sans: "Inter Tight", "Arial Narrow", Arial, sans-serif;
+  --f-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace;
+  /* Two weights, as the rule requires. v2 changed which two: the subsets carry a
+     full 100-900 axis, so 600 costs nothing and gives display the density the
+     references depend on. --w-medium is the same value; it stays as a name for
+     small-label emphasis so the two intents remain distinguishable in CSS. */
+  --w-regular: 400;
+  --w-medium: 600;
+  --w-display: 600;
+
+  /* Mega — frame-fitted display. The per-string width comes from the generator
+     as --fit, summed from the real per-glyph advances in site/mega-metrics.json;
+     an average advance is not accurate enough. --ls-mega must match the tracking
+     that megaFit() assumes. */
+  --t-mega-cap: 13.5rem;
+  /* The wordmark fills the frame like Kern's; 24rem is where a seven-letter
+     mark lands at 1400px, so the cap never truncates it. */
+  --t-mega-cap-hero: 24rem;
+  /* Display-scale roles used by the v3 band grammar. */
+  --t-figure: clamp(3.25rem, 6.6vw, 6.5rem);
+  --t-statement: clamp(1.75rem, 3.1vw, 3rem);
+  --lh-mega: 0.82;
+  --ls-mega: -0.04em;
+
+  --t-display: clamp(4rem, 1.6rem + 8vw, 8rem);
+  --t-display-mobile: clamp(3.25rem, 15.4vw, 4rem);
+  --t-h1: clamp(3.5rem, 1.8rem + 5.2vw, 6rem);
+  --t-h2: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  --t-h3: clamp(1.75rem, 1.35rem + 1.2vw, 2.25rem);
+  --t-h4: 1.25rem;
+  --t-lead: clamp(1.25rem, 1.05rem + 0.55vw, 1.5rem);
+  --t-body: clamp(1rem, 0.96rem + 0.14vw, 1.125rem);
+  --t-small: 0.875rem;
+  --t-data: 0.75rem;
+  --t-micro: 0.6875rem;
+  --lh-display: 0.9;
+  --lh-h1: 0.94;
+  --lh-h2: 0.99;
+  --lh-h3: 1.06;
+  --lh-lead: 1.4;
+  --lh-body: 1.56;
+  --lh-data: 1.35;
+  --ls-display: -0.045em;
+  --ls-h1: -0.04em;
+  --ls-h2: -0.035em;
+  --ls-h3: -0.02em;
+  --ls-lead: -0.01em;
+  --ls-body: 0;
+  --ls-data: 0.08em;
+  --measure: 68ch;
+  --measure-lead: 46ch;
+  --measure-display: 18ch;
+
+  /* Spacing */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-7: 2rem;
+  --s-8: 2.5rem;
+  --s-9: 3rem;
+  --s-10: 4rem;
+  --s-11: 4.5rem;
+  --s-12: 6rem;
+  --s-13: 7rem;
+  --s-14: 8.5rem;
+  /* v3: space is now the structure, so it goes back up. 100px at 1440 is what
+     both Kern and Halo use for a section, and with no rules to separate bands
+     it has to do that work on its own. */
+  --section-y: clamp(var(--s-10), 6.5vw, var(--s-13));
+  --section-y-tight: clamp(var(--s-8), 4vw, var(--s-10));
+  --cell-pad: 0;
+  --cell-pad-mobile: 0;
+  --control-h: 3.5rem;
+  --touch: 2.75rem;
+
+  /* Open field — v3. The four-bay gapless frame and its continuous rails are
+     gone; see grid.css for why. Container and gap follow the references:
+     Kern 1400px/20px, Halo 1320px/40px. */
+  --frame-max: 87.5rem;              /* 1400px */
+  --frame-inset: clamp(1.25rem, 4vw, 3.5rem);
+  --frame-inline: min(calc(100% - var(--frame-inset) * 2), var(--frame-max));
+  --gap: clamp(1rem, 2.2vw, 2rem);
+  --gap-row: clamp(2.5rem, 4vw, 4rem);
+  /* Text lists need less air between entries than image rows do. */
+  --gap-list: clamp(1.75rem, 2.8vw, 2.5rem);
+  --nav-h: 4.5rem;
+  --nav-h-mobile: 3.75rem;
+  --rule-size: 1px;
+  --focus-size: 2px;
+
+  /* Images */
+  --ar-square: 1 / 1;
+  --ar-portrait: 4 / 5;
+  --ar-landscape: 3 / 2;
+  --ar-wide: 16 / 9;
+  /* Vertical footage, filmed on a phone held upright at the pile position and
+     published at the ratio it was shot in rather than cropped to a landscape
+     band that would cut off both the rig head and the bore. */
+  --ar-clip: 9 / 16;
+  --ar-map: 4 / 3;
+  --image-hover: 1.025;
+  --hero-settle: 1.04;
+  --parallax-range: 0.04;
+  --parallax-overscan: 6%;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 180ms;
+  --dur-state: 320ms;
+  --dur-reveal: 640ms;
+  --dur-scene: 900ms;
+  --reveal-travel: 0.75rem;
+  --arrow-travel: 0.375rem;
+  --row-travel: 0.5rem;
+  --stagger: 60ms;
+
+  /* Layers and surfaces */
+  --radius: 0;
+  --shadow: none;
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-nav: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+}
+
+[data-surface="ink"] {
+  --bg: var(--c-ink);
+  --bg-raised: var(--c-ink-high);
+  --fg: var(--c-paper);
+  --fg-secondary: var(--c-copy-inverse);
+  --fg-muted: var(--c-copy-muted-inverse);
+  --rule: var(--c-rule-ink);
+  /* --c-blue measures well under 2:1 contrast against --c-ink — unreadable as
+     text or a focus ring on this surface. [data-surface="blue"] already had
+     this swap; ink, the surface actually used sitewide, never did. */
+  --accent: var(--c-paper-high);
+  --focus-ring: var(--c-paper-high);
+}
+
+[data-surface="blue"] {
+  --bg: var(--c-blue);
+  --bg-raised: var(--c-blue);
+  --fg: var(--c-paper-high);
+  --fg-secondary: var(--c-paper-high);
+  --fg-muted: var(--c-copy-inverse);
+  --rule: var(--c-rule-ink);
+  --accent: var(--c-paper-high);
+  --focus-ring: var(--c-paper-high);
+}
+
+[data-surface="recessed"] { --bg: var(--c-paper-low); }
+[data-surface="paper-high"] { --bg: var(--c-paper-high); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur-state: 0.01ms;
+    --dur-reveal: 0.01ms;
+    --dur-scene: 0.01ms;
+    --reveal-travel: 0;
+    --arrow-travel: 0;
+    --row-travel: 0;
+    --stagger: 0ms;
+  }
+}

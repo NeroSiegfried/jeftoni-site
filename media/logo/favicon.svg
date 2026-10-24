@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 1416 1330" role="img" aria-label="Jeftoni">
+  <defs>
+    <clipPath id="favicon-clip">
+      <rect width="1416" height="1330" rx="160"/>
+    </clipPath>
+  </defs>
+  <rect width="1416" height="1330" rx="160" fill="#FAF9F6"/>
+  <g clip-path="url(#favicon-clip)" transform="translate(127.44 119.7) scale(0.82)">
+    <g fill="none" stroke="#FF0B0B" stroke-width="113.25" stroke-linecap="round">
+      <path d="M375.39 57.19A577.98 577.98 0 0 0 1360.59 57.19" stroke-width="113.34"/>
+      <path d="M401.12 853.75L56.38 861"/>
+      <path d="M61.36 871.25A401.16 401.16 0 1 0 863.62 864.25"/>
+    </g>
+    <path d="M808.38 486.5H921.62V871.25H808.38Z" fill="#FF0B0B"/>
+    <g fill="#2B2589">
+      <path d="M1080 458.5V888A342.95 342.95 0 0 1 939.82 1164.59Q880.47 1247.05 807.5 1317.75L883.84 1308.55A429.2 429.2 0 0 0 1192 896.77V454.4A27.62 27.62 0 0 0 1164.38 426.77Z"/>
+      <path d="M891 178L845 178L810 174L812 48L820 25L839 8L864 0L1212 0L1186 35L1154 68L1099 110L1093 114L925 112L924 175Z"/>
+      <path d="M482 1118L417 1114L390 1065L368 1009L436 1004L480 986L514 1055L550 1103L523 1112Z"/>
+    </g>
+  </g>
+</svg>

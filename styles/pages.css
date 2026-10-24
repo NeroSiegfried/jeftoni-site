@@ -1,0 +1,228 @@
+/* SET-OUT v3 — route-specific compositions on an open field.
+ *
+ * Every component here was previously a bordered cell in a four-bay grid. They
+ * are now blocks separated by the grid gap. Nothing in this file draws a rule;
+ * the register table in components.css is the one exception in the system. */
+
+.statement { grid-column: 1 / span 5; }
+
+/* Tally — counts by category */
+.tally { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.tally__item { display: grid; align-content: start; gap: var(--s-3); }
+.tally__count { order: -1; font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); }
+.tally__label { color: var(--fg-muted); }
+.tally__item--accent .tally__count { color: var(--accent); }
+[data-surface="ink"] .tally__item--accent .tally__count { color: var(--c-paper-high); }
+
+/* About ---------------------------------------------------------------- */
+.timeline { grid-column: 1 / -1; display: grid; gap: var(--gap-list); }
+.timeline__item { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: var(--s-4) var(--gap); align-items: baseline; }
+.timeline__year { font-family: var(--f-mono); font-variant-numeric: tabular-nums; color: var(--fg-muted); }
+.timeline__body { max-inline-size: var(--measure); }
+.timeline__text { margin-block-start: var(--s-4); color: var(--fg-secondary); }
+
+.people { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.person { grid-column: span 1; display: grid; align-content: start; gap: var(--s-5); }
+.person__portrait { position: relative; overflow: hidden; aspect-ratio: var(--ar-portrait); }
+.person__portrait img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+/* Real names and roles exist; photographs do not yet. A silhouette mark and
+   an explicit label — not a stock photo standing in for a named person — so
+   nobody mistakes the placeholder for a likeness. Swap for a real portrait
+   the moment one exists, same as data/company.json's photo: null anticipates. */
+.person__portrait--placeholder {
+  display: grid;
+  place-items: center;
+  gap: var(--s-5);
+  background: var(--c-ink);
+  color: var(--c-copy-muted-inverse);
+}
+.person__placeholder-icon { inline-size: 22%; block-size: auto; }
+.person__role { color: var(--fg-muted); }
+
+.next-links { grid-column: 1 / -1; display: grid; gap: var(--s-6); }
+.next-links li a { display: inline-flex; gap: var(--s-4); font-size: var(--t-h4); transition: color var(--dur-fast) var(--ease-out); }
+.next-links li a:hover { color: var(--accent); }
+
+/* Safety and quality --------------------------------------------------- */
+.claims { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.claim { display: grid; gap: var(--s-4); align-content: start; }
+.claim__mark { color: var(--accent); }
+.claim--no .claim__mark { color: var(--fg-muted); }
+.claim p { max-inline-size: var(--measure); font-size: var(--t-lead); line-height: var(--lh-lead); }
+.claim--no p { color: var(--fg-secondary); }
+
+/* Plant ---------------------------------------------------------------- */
+.plant { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.plant__item { display: grid; gap: var(--s-2); align-content: start; }
+.plant__index { color: var(--fg-muted); }
+.plant__type { font-size: var(--t-h4); font-weight: var(--w-medium); }
+.plant__evidence { color: var(--fg-muted); }
+
+/* Clients -------------------------------------------------------------- */
+.ranked { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.ranked__item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2) var(--s-5); align-items: baseline; }
+.ranked__index { color: var(--fg-muted); }
+.ranked__name { font-size: var(--t-h4); font-weight: var(--w-medium); }
+.ranked__note { grid-column: 1; color: var(--fg-muted); }
+.ranked__count { grid-row: 1; grid-column: 2; color: var(--fg-muted); }
+.tag-list { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6) var(--gap); }
+.tag { color: var(--fg-secondary); }
+
+/* Project register ------------------------------------------------------ */
+.section--register { padding-block-start: var(--s-10); }
+.provenance { grid-column: 1 / span 7; margin-block-start: var(--s-10); padding: var(--s-8); background: var(--bg-raised); }
+.provenance__head { margin-block-end: var(--s-5); color: var(--fg-muted); }
+.provenance p + p { margin-block-start: var(--s-4); }
+
+/* Contact --------------------------------------------------------------- */
+.contact-cards { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.contact-card { display: grid; align-content: start; gap: var(--s-4); }
+.contact-card__label { color: var(--fg-muted); }
+.contact-card__value--stack { display: grid; gap: var(--s-2); }
+
+.offices { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.office { grid-column: span 1; display: grid; align-content: start; gap: var(--s-4); }
+.office__index { color: var(--fg-muted); }
+.office__type { font-size: var(--t-h4); font-weight: var(--w-medium); }
+.office__address { color: var(--fg-secondary); }
+.office__since { color: var(--fg-muted); }
+
+.contact-map { align-items: stretch; }
+.contact-map__ledger { grid-column: 1 / span 4; display: grid; gap: var(--s-9); align-content: start; }
+.map-location { display: grid; gap: var(--s-3); }
+.map-location__index { color: var(--fg-muted); }
+.map-location__address { color: var(--fg-secondary); }
+.map-location__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-block-start: var(--s-2); }
+.map-location__load, .map-location__open {
+  min-block-size: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--s-4);
+  border: var(--rule-size) solid var(--rule);
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--t-small);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.map-location__load:hover, .map-location__open:hover { background: var(--c-blue); color: var(--c-paper-high); border-color: var(--c-blue); }
+.map-location__note { color: var(--fg-muted); }
+.contact-map__canvas { grid-column: 6 / -1; min-block-size: clamp(34rem, 68svh, 46rem); background: var(--c-paper-low); overflow: hidden; }
+.contact-map__canvas iframe { inline-size: 100%; block-size: 100%; border: 0; animation: map-enter var(--dur-scene) var(--ease-out) both; }
+@keyframes map-enter { from { opacity: 0; transform: scale(1.01); } }
+
+.form { grid-column: 1 / span 6; }
+.field + .field { margin-block-start: var(--s-6); }
+.field__label { display: block; margin-block-end: var(--s-2); color: var(--fg-muted); }
+.field__control {
+  inline-size: 100%;
+  min-block-size: var(--control-h);
+  padding: var(--s-3) var(--s-4);
+  border: var(--rule-size) solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--c-paper-high);
+  resize: vertical;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.field__control:focus-visible { border-color: var(--c-blue); }
+.form__actions { display: flex; align-items: center; gap: var(--s-6); margin-block-start: var(--s-9); }
+.form__note { color: var(--fg-muted); }
+
+/* Gallery ---------------------------------------------------------------
+   A real masonry: four explicit flex columns (gallery.mjs assigns photos to
+   them at build time), not CSS `columns` — the browser-balanced version left
+   the split up to the engine, and whenever an engine distributed items in
+   anything but consecutive chunks, a column could land only-tall or
+   only-short. Frames alternate between two fixed ratios (portrait,
+   landscape) for a deliberate brick pattern instead of a random jumble.
+   Full-bleed, same technique as .strip.
+   The caption never sits under the frame; it is a scrim overlay that only
+   appears on hover or focus, so at rest the sheet is nothing but photographs. */
+.gallery {
+  display: flex;
+  gap: var(--s-2);
+  /* The split hero above is deliberately flush at the bottom (0 padding, so
+     its own image bleeds to the next band on every page that uses it) — the
+     gap belongs to this page specifically, not the shared hero component. */
+  margin-block-start: var(--s-7);
+  inline-size: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+.gallery__col { display: flex; flex-direction: column; gap: var(--s-2); flex: 1 1 0; min-inline-size: 0; }
+.gallery__item--tall .gallery__frame { aspect-ratio: var(--ar-portrait); }
+.gallery__item--short .gallery__frame { aspect-ratio: var(--ar-landscape); }
+.gallery__figure { display: block; }
+.gallery__frame { position: relative; overflow: hidden; }
+.gallery__frame:focus-visible { outline: var(--rule-size) solid var(--c-blue); outline-offset: -2px; }
+/* Absolutely positioned and overscanned so the parallax translate below never
+   uncovers the frame edge — same technique as the hero and page-hero images.
+   Each image is already CDN-cropped to its assigned ratio (see frameFor in
+   gallery.mjs), so nothing here stretches or crops a second time. */
+.gallery__frame img {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(var(--parallax-overscan) * -1);
+  inline-size: 100%;
+  block-size: calc(100% + var(--parallax-overscan) * 2);
+  object-fit: cover;
+}
+.gallery__item:hover .gallery__frame img,
+.gallery__frame:focus-visible img { --image-scale: var(--image-hover); }
+
+.gallery__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--s-1);
+  padding: var(--s-4);
+  color: var(--c-paper-high);
+  background: var(--c-scrim-bottom);
+  opacity: 0;
+  transition: opacity var(--dur-state) var(--ease-out);
+}
+.gallery__item:hover .gallery__overlay,
+.gallery__frame:focus-visible .gallery__overlay { opacity: 1; }
+.gallery__title { font-size: var(--t-small); }
+.gallery__dims { color: rgb(241 240 235 / 0.7); }
+
+/* No hover on touch — the caption stays on rather than being unreachable. */
+@media (hover: none) {
+  .gallery__overlay { opacity: 1; }
+}
+
+.prose--legal { grid-column: 1 / span 7; }
+.prose--legal h2 { margin-block-start: var(--s-10); margin-block-end: var(--s-5); }
+.prose--legal h2:first-child { margin-block-start: 0; }
+
+/* Responsive ------------------------------------------------------------ */
+@media (max-width: 74.99rem) {
+  .statement { grid-column: 1 / -1; }
+  .tally, .people, .contact-cards, .offices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gallery { flex-wrap: wrap; }
+  .gallery__col { flex-basis: calc(50% - var(--s-2) / 2); }
+  .person, .office { grid-column: span 1; }
+  .claims, .plant, .ranked { grid-template-columns: minmax(0, 1fr); }
+  .tag-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .provenance, .form, .prose--legal { grid-column: 1 / -1; }
+
+  .contact-map__ledger { grid-column: 1 / -1; }
+  .contact-map__canvas { grid-column: 1 / -1; margin-block-start: var(--gap-row); min-block-size: clamp(28rem, 56svh, 36rem); }
+}
+
+@media (max-width: 47.99rem) {
+  .tally, .people, .contact-cards, .offices, .tag-list { grid-template-columns: minmax(0, 1fr); }
+  .gallery__col { flex-basis: 100%; }
+  .person, .contact-card, .office { grid-column: 1 / -1; }
+  .timeline__item { grid-template-columns: minmax(0, 1fr); gap: var(--s-3); }
+  .claim { gap: var(--s-3); }
+  .ranked__item { grid-template-columns: minmax(0, 1fr); }
+  .ranked__note { grid-column: 1; }
+  .ranked__count { grid-row: auto; grid-column: 1; }
+  .provenance { padding: var(--s-6); }
+  .form__actions { align-items: stretch; flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-map__canvas iframe { animation: none; }
+}

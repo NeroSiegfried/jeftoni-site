@@ -1,0 +1,1414 @@
+/* SET-OUT v3 — components on an open field.
+ *
+ * The rule of this file: no component draws a border. Separation comes from
+ * gap, from the edge of a photograph, and from type weight. The two exceptions
+ * are declared where they occur — the register table, which is genuinely
+ * tabular and unreadable without row rules, and closed controls, which may own
+ * their own outline. */
+
+/* Navigation ------------------------------------------------------------ */
+.nav {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: var(--z-modal);
+  min-block-size: var(--nav-h);
+  color: var(--c-ink);
+  transition: background var(--dur-state) var(--ease-out), color var(--dur-state) var(--ease-out);
+}
+
+.nav[data-solid="true"],
+.nav[data-scrolled="true"] {
+  background: rgb(241 240 235 / 0.88);
+  backdrop-filter: blur(12px);
+}
+
+body[data-hero-nav] .nav:not([data-scrolled="true"]):not([data-solid="true"]) {
+  color: var(--c-paper-high);
+  background: var(--c-transparent);
+}
+
+.nav__frame {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  inline-size: var(--frame-inline);
+  min-block-size: var(--nav-h);
+  margin-inline: auto;
+}
+
+.nav__brand { display: flex; align-items: baseline; gap: var(--s-3); }
+/* Both axes stated. An inline <svg> with `inline-size: auto` resolves to zero
+   in Chromium — the mark was in the markup the whole time and painting nothing. */
+.nav__mark { block-size: 1.5rem; inline-size: 1.597rem; flex: none; align-self: center; }
+
+.nav__brand-name {
+  font-size: var(--t-h4);
+  font-weight: var(--w-medium);
+  letter-spacing: var(--ls-h3);
+  text-transform: uppercase;
+}
+
+.nav__brand-note { opacity: 0.66; }
+
+.nav__links { display: flex; align-items: center; gap: var(--s-2); }
+.nav__links li { display: flex; }
+.nav__item { position: relative; }
+
+.nav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-block-size: var(--touch);
+  padding-inline: var(--s-4);
+  font-size: var(--t-small);
+  /* The route you are NOT on steps back. Without this the current route had to
+     carry the whole signal on a 1px underline that hover drew identically, and
+     "which page am I on" was a question the bar could not answer. */
+  color: var(--fg-secondary);
+  transition: color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+.nav__link:hover,
+.nav__link:focus-visible { color: var(--fg); }
+
+/* Current route is marked with a short blue underline rather than a filled
+   cell. The fill was the largest single consumer of the accent budget. */
+.nav__link::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0.9rem;
+  inset-inline: var(--s-4);
+  block-size: var(--focus-size);
+  background: var(--c-blue);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-state) var(--ease-out);
+}
+.nav__link:hover::after,
+.nav__link:focus-visible::after,
+.nav__link[data-state]::after { transform-origin: left; }
+.nav__link:hover::after,
+.nav__link:focus-visible::after { transform: none; }
+
+/* Three states, told apart without a second colour:
+     page    — the route itself: full ink, weight up, the underline at full strength
+     section — a route beneath it: full ink, weight up, the same underline faded
+     rest    — stepped back, no underline
+   The section mark is the page mark at a third of its strength, so the two read
+   as one signal at two levels rather than as two different ideas. It is faded
+   rather than shortened: a part-length underline reads as a rendering fault. */
+.nav__link[data-state] { color: var(--fg); font-weight: var(--w-medium); }
+.nav__link[data-state="page"]::after,
+.nav__link[data-state="section"]::after { transform: none; }
+.nav__link[data-state="section"]::after { opacity: 0.35; }
+.nav__link[data-state="section"]:hover::after,
+.nav__link[data-state="section"]:focus-visible::after { opacity: 1; }
+
+body[data-hero-nav] .nav:not([data-scrolled="true"]):not([data-solid="true"]) .nav__link { color: rgb(255 255 255 / 0.72); }
+body[data-hero-nav] .nav:not([data-scrolled="true"]):not([data-solid="true"]) .nav__link:hover,
+body[data-hero-nav] .nav:not([data-scrolled="true"]):not([data-solid="true"]) .nav__link:focus-visible,
+body[data-hero-nav] .nav:not([data-scrolled="true"]):not([data-solid="true"]) .nav__link[data-state] { color: currentColor; }
+body[data-hero-nav] .nav:not([data-scrolled="true"]) .nav__link::after { background: currentColor; }
+
+.nav__end { display: flex; align-items: center; gap: var(--s-6); }
+
+.nav__cta,
+.nav__toggle {
+  min-block-size: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--t-small);
+  font-weight: var(--w-medium);
+}
+
+.nav__toggle { border: 0; background: transparent; cursor: pointer; }
+/* + closed, x open, and a quarter turn on hover. A plus has four-fold symmetry
+   so the turn starts and ends identical — the point is the movement through it,
+   which says "this is a control" without changing what it means. A quarter turn
+   at state speed reads as a flick of acknowledgement; the half turn it replaced
+   took long enough that the pointer had usually left before it finished. */
+.nav__toggle-mark {
+  display: block;
+  font-family: var(--f-mono);
+  transform: rotate(var(--spin, 0deg));
+  transition: transform var(--dur-state) var(--ease-out);
+}
+.nav__toggle[aria-expanded="true"] .nav__toggle-mark { --spin: 45deg; }
+.nav__toggle:hover .nav__toggle-mark,
+.nav__toggle:focus-visible .nav__toggle-mark { --spin: 90deg; }
+.nav__toggle[aria-expanded="true"]:hover .nav__toggle-mark,
+.nav__toggle[aria-expanded="true"]:focus-visible .nav__toggle-mark { --spin: 135deg; }
+
+/* The enquiry action reads as nav text, not a boxed button, so it takes the
+   arrow-travel treatment rather than the ink-fill one — Allowed Motion, design-language.md §9. */
+.nav__cta { color: inherit; transition: color var(--dur-fast) var(--ease-out); }
+.nav__cta:hover,
+.nav__cta:focus-visible { color: var(--c-blue); }
+/* --c-blue is a dark, low-luminance navy — reliable on the paper nav bar, but
+   over the hero it sits directly on an arbitrary photograph with no scrim, the
+   same problem the current-route underline below already avoids by staying on
+   currentColor instead. Same fix here: the arrow travelling is the whole
+   hover signal while the nav is still transparent over the hero. */
+body[data-hero-nav] .nav:not([data-scrolled="true"]):not([data-solid="true"]) .nav__cta:hover,
+body[data-hero-nav] .nav:not([data-scrolled="true"]):not([data-solid="true"]) .nav__cta:focus-visible { color: currentColor; }
+.nav__cta .arw { transition: transform var(--dur-state) var(--ease-out); }
+.nav__cta:hover .arw,
+.nav__cta:focus-visible .arw { transform: translateX(var(--arrow-travel)); }
+
+.nav-panel {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-start: var(--nav-h);
+  inset-block-end: 0;
+  z-index: var(--z-overlay);
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+.nav-panel__grid { block-size: 100%; min-block-size: 0; overflow-y: auto; padding-block: var(--s-8) var(--s-9); align-content: start; }
+
+/* Two columns: the tree, and everything that is not a route. The tree takes
+   more than half because it is the reason the panel exists; the aside is two
+   short blocks of contact detail, which is all that is left once the tree
+   stopped repeating the footer back at itself. */
+/* Three columns, the arrangement the panel had before it was rebuilt: routes,
+   then everything that is not a route, then a figure holding the right-hand
+   half. What is new is that the figure is live — it previews whichever route
+   the pointer is on — rather than one fixed photograph. */
+.nav-tree { grid-column: 1 / span 4; align-self: start; }
+.nav-panel__aside { grid-column: 6 / span 2; display: grid; gap: var(--s-8); align-content: start; }
+.nav-preview { grid-column: 8 / -1; align-self: start; }
+.nav-panel__label { margin-block-end: var(--s-4); color: var(--c-steel); }
+.nav-panel__block p + p { margin-block-start: var(--s-1); }
+
+.nav-panel__aside-link {
+  display: inline-flex;
+  min-block-size: var(--touch);
+  align-items: center;
+  color: var(--fg-secondary);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.nav-panel__aside-link:hover,
+.nav-panel__aside-link:focus-visible { color: var(--c-blue); }
+
+/* ── The tree ─────────────────────────────────────────────────────────────
+   Three kinds of row, one shape: label on the left, one glyph on a single
+   right-hand column. A branch marks itself with a vertical arrow; a route
+   points right at itself. All four are glyphs from the same font subset, so
+   they match in weight and optical size the way a drawn chevron never would.
+
+   A branch row is split where the hand splits it. You go to the section by
+   clicking the words, so the link is exactly as wide as its text and no wider;
+   everything right of the words is the disclosure. The control grows from a
+   44px square to most of the row without taking a pixel from the link.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.nav-tree__group + .nav-tree__group { margin-block-start: var(--s-4); }
+.nav-tree__head { display: flex; align-items: stretch; padding-inline-end: var(--s-5); }
+/* Leaf rows take the same inset so every arrow, at both levels, shares one
+   vertical whether or not the row has a disclosure. */
+.nav-tree__group > .nav-tree__route { padding-inline-end: var(--s-5); }
+
+.nav-tree__route {
+  display: flex;
+  /* Centred, not baseline. The mark is a 1.5rem square box, and aligning a box
+     on the text baseline hangs it below the row's optical centre. */
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  padding-block: var(--s-2);
+  font-size: var(--t-h3);
+  font-weight: var(--w-regular);
+  letter-spacing: var(--ls-h3);
+  color: var(--fg-secondary);
+  transition: color var(--dur-state) var(--ease-out), transform var(--dur-state) var(--ease-out);
+}
+/* Inside a branch head the link stops at its text; on a leaf row it takes the
+   whole width, because nothing else is competing for it. */
+.nav-tree__head .nav-tree__route { flex: 0 0 auto; }
+
+.nav-tree__toggle {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s-4);
+  /* Chrome gives a <button> 6px of horizontal padding by default, which is
+     exactly how far the marks sat left of every other arrow in the column. */
+  padding: var(--s-2) 0;
+  padding-inline-start: var(--s-6);
+  border: 0;
+  background: transparent;
+  color: var(--fg-muted);
+  font: inherit;
+  font-size: var(--t-h3);
+  text-align: end;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.nav-tree__toggle:hover,
+.nav-tree__toggle:focus-visible { color: var(--fg); }
+
+/* How many routes are behind the control, printed inside the control. The row
+   says there is more here before anything has been pointed at, and says how
+   much — which a bare arrow cannot. */
+.nav-tree__count {
+  font-size: var(--t-micro);
+  letter-spacing: var(--ls-data);
+  opacity: 0.55;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.nav-tree__toggle:hover .nav-tree__count,
+.nav-tree__toggle:focus-visible .nav-tree__count { opacity: 1; }
+
+/* One glyph cell, three glyphs stacked, one shown. Which one is a question
+   about what the pointer is on, not about the row:
+
+     at rest        ↓ / ↑   there is more here, and whether it is open
+     over the words →       because that is where the words go
+     over the control ↓ / ↑ because that is what the control does
+
+   ↑ is not a rotated ↓ in a real typeface, so the marks swap rather than spin;
+   spinning one into the other reads as a different control than the one you
+   pressed. */
+/* A fixed square cell, with the mark filling it and centring its glyph inside.
+   Rotating a box sized to the glyph turns it about the glyph's own centre, which
+   is not the column's centre — which is why the three states did not line up. */
+.nav-tree__marks { display: inline-grid; place-items: center; inline-size: 1.5rem; block-size: 1.5rem; flex: none; }
+.nav-tree__mark { grid-area: 1 / 1; display: grid; place-items: center; inline-size: 100%; block-size: 100%; }
+
+/* ── The mark's three states ──────────────────────────────────────────────
+   One arrow, three rotations, so a move between ANY two of them is a turn the
+   eye can follow rather than a swap it can only notice afterwards:
+
+     closed        90°   ↓   there is more below this row
+     open         -90°   ↑   and it is showing
+     over the words 0°   →   because that is where the words go
+
+   The hover rule is listed last and outranks the expanded rule, so pointing at
+   the label wins over whichever way the disclosure is currently pointing. */
+.nav-tree__toggle .nav-tree__mark {
+  transform: rotate(90deg);
+  transition: transform var(--dur-state) var(--ease-out);
+}
+.nav-tree__toggle[aria-expanded="true"] .nav-tree__mark { transform: rotate(-90deg); }
+.nav-tree__route:hover ~ .nav-tree__toggle .nav-tree__mark,
+.nav-tree__route:focus-visible ~ .nav-tree__toggle .nav-tree__mark { transform: rotate(0deg); }
+
+/* ── The reveal ───────────────────────────────────────────────────────────
+   A grid row animates from 0fr to 1fr, which is the one way to transition to
+   an intrinsic height without measuring anything in JavaScript. The list
+   inside also rises as it goes, so the group reads as opening rather than as
+   being uncovered. behaviour.js only sets the attribute.
+
+   Served open, so with no script the whole tree is a plain list. */
+.nav-tree__reveal {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--dur-state) var(--ease-out), visibility 0s;
+}
+.nav-tree__reveal > * { min-block-size: 0; overflow: hidden; }
+.nav-tree__group[data-collapsed] .nav-tree__reveal {
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows var(--dur-state) var(--ease-out), visibility 0s linear var(--dur-state);
+}
+.nav-tree__children {
+  /* Padding, not margin: a margin sits outside the clipped box and left 4px
+     of the collapsed group still occupying space. */
+  padding-block-start: var(--s-1);
+  /* Room for the travel inside the clip: overflow clips at the padding box, so
+     an arrow sitting in this padding can still move without being cut. It has
+     to clear BOTH movements — the row travels 8px and the arrow another 6px on
+     top of it, which is why 12px was still two pixels short. */
+  padding-inline-end: var(--s-5);
+  transition: opacity var(--dur-state) var(--ease-out), transform var(--dur-state) var(--ease-out);
+}
+.nav-tree__group[data-collapsed] .nav-tree__children { opacity: 0; transform: translateY(calc(var(--reveal-travel) * -1)); }
+.nav-tree__child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  /* Indented on the LEFT only. The indent used to be padding on the list with
+     a negative margin here to pull the arrow back out — which put the arrow
+     exactly on the list's overflow:hidden edge (the clip the reveal animation
+     needs), so the 6px hover travel took it outside and it vanished. */
+  padding-inline-start: var(--s-6);
+  min-block-size: var(--touch);
+  font-size: var(--t-body);
+  color: var(--fg-secondary);
+  transition: color var(--dur-state) var(--ease-out), transform var(--dur-state) var(--ease-out);
+}
+
+/* A branch's arrow lives in the button, not the link, so it needs the resting
+   dim and the hover response wiring across that boundary — without it, pointing
+   at the words lit the label blue and moved it while the arrow stayed grey and
+   still, which read as the arrow being switched off rather than pointed at. */
+.nav-tree__toggle .nav-tree__marks {
+  opacity: 0.35;
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-state) var(--ease-out);
+}
+.nav-tree__toggle:hover .nav-tree__marks,
+.nav-tree__toggle:focus-visible .nav-tree__marks { opacity: 1; }
+.nav-tree__route:hover ~ .nav-tree__toggle,
+.nav-tree__route:focus-visible ~ .nav-tree__toggle { color: var(--c-blue); }
+.nav-tree__route:hover ~ .nav-tree__toggle .nav-tree__marks,
+.nav-tree__route:focus-visible ~ .nav-tree__toggle .nav-tree__marks {
+  opacity: 1;
+  transform: translateX(var(--arrow-travel));
+}
+
+/* Every arrow in the tree is one size in one box, and the box is what aligns,
+   not the glyph. Elsewhere on the site an arrow inherits the size of the text
+   it follows, which is right when it belongs to a sentence; here it is a column
+   of UI marks, and inheriting put the 18px child arrows 7px off the 28px route
+   arrows. And → is a wide glyph with its head near the right edge while ↓ is
+   narrow and centred, so even at one size on one right edge their ink landed
+   8px apart. Centring each in a fixed box aligns what the eye follows. */
+.nav-tree__marks .arw { font-size: var(--t-h4); }
+.nav-tree__route .nav-tree__marks,
+.nav-tree__child > .nav-tree__marks {
+  opacity: 0.35;
+  transition: transform var(--dur-state) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+.nav-tree__route:hover,
+.nav-tree__route:focus-visible,
+.nav-tree__child:hover,
+.nav-tree__child:focus-visible { color: var(--c-blue); transform: translateX(var(--row-travel)); }
+.nav-tree__route:hover .nav-tree__marks,
+.nav-tree__route:focus-visible .nav-tree__marks,
+.nav-tree__child:hover .nav-tree__marks,
+.nav-tree__child:focus-visible .nav-tree__marks { opacity: 1; transform: translateX(var(--arrow-travel)); }
+/* The branch label travels like every other row. It can, now that the arrow in
+   the button beside it travels the same distance at the same time. */
+
+/* Same three states as the bar, at panel scale. A branch you are inside stays
+   marked while its children are collapsed — that is the point of it. */
+.nav-tree__route[data-state],
+.nav-tree__child[data-state],
+.nav-panel__aside-link[data-state] { color: var(--fg); font-weight: var(--w-medium); }
+.nav-tree__route[data-state="page"] .nav-tree__label,
+.nav-tree__child[data-state="page"] .nav-tree__label,
+.nav-panel__aside-link[data-state="page"] {
+  text-decoration: underline;
+  text-decoration-color: var(--c-blue);
+  text-decoration-thickness: var(--focus-size);
+  text-underline-offset: 0.28em;
+}
+
+/* ── Preview ──────────────────────────────────────────────────────────────
+   The frame the old dropdown carried, moved into the menu. Pointing at a route
+   crossfades to its own photograph; the frames are stacked in one cell so the
+   pane never changes height, and nothing moves but the picture — the same
+   treatment the capability band on the home page uses (design-language.md §9).
+   ────────────────────────────────────────────────────────────────────────── */
+
+.nav-preview__stack { position: relative; }
+.nav-preview__stack { position: relative; display: grid; }
+.nav-preview__frame {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-state) var(--ease-out), visibility 0s linear var(--dur-state);
+}
+.nav-preview__frame[data-active] { opacity: 1; visibility: visible; transition-delay: 0s; }
+/* Portrait, the ratio the panel figure has always used. */
+.nav-preview__media { overflow: hidden; aspect-ratio: var(--ar-portrait); }
+.nav-preview__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.nav-preview__copy { display: grid; gap: var(--s-3); margin-block-start: var(--s-5); }
+.nav-preview__summary { color: var(--fg-secondary); }
+.nav-preview__evidence { color: var(--fg-muted); }
+
+.nav-panel[data-state="open"] .nav-tree,
+.nav-panel[data-state="open"] .nav-panel__aside { animation: panel-enter var(--dur-reveal) var(--ease-out) both; }
+.nav-panel[data-state="open"] .nav-panel__aside { animation-delay: 70ms; }
+@keyframes panel-enter { from { opacity: 0; transform: translateY(var(--reveal-travel)); } }
+
+/* Buttons and links -----------------------------------------------------
+   A closed control may own its outline; nothing else may. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-6);
+  min-block-size: var(--control-h);
+  padding-inline: var(--s-6);
+  border: var(--rule-size) solid var(--c-ink);
+  background: var(--c-ink);
+  color: var(--c-paper-high);
+  font-weight: var(--w-medium);
+  cursor: pointer;
+  /* Leaving hover: colour reverts quickly (--dur-fast) while the wipe retracts
+     slowly (--dur-state), so the label darkens well before the slow-retracting
+     blue has cleared — never light text sitting on ground the wipe just left. */
+  transition: background var(--dur-state) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-state) var(--ease-out);
+}
+/* The accent wipes in from the left rather than the whole plane switching
+   colour on one frame. Same duration as every other state on the page. */
+.btn { position: relative; isolation: isolate; overflow: hidden; }
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--c-blue);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-state) var(--ease-out);
+}
+.btn:hover::before,
+.btn:focus-visible::before { transform: scaleX(1); transform-origin: left; }
+/* Entering hover: colour is delayed to land right as the wipe finishes
+   covering the button, rather than changing on its own faster clock — a
+   plain same-duration change still turned the label light while the wipe
+   (an eased, front-loaded curve) had only covered part of the ground it
+   starts from, which is what made it briefly disappear. */
+.btn:hover, .btn:focus-visible {
+  color: var(--c-paper-high);
+  border-color: var(--c-blue);
+  transition: background var(--dur-state) var(--ease-out), color var(--dur-fast) var(--ease-out) calc(var(--dur-state) - var(--dur-fast)), border-color var(--dur-state) var(--ease-out);
+}
+[data-surface="ink"] .btn { border-color: var(--c-paper-high); background: var(--c-paper-high); color: var(--c-ink); }
+[data-surface="ink"] .btn:hover,
+[data-surface="ink"] .btn:focus-visible {
+  color: var(--c-paper-high);
+  border-color: var(--c-blue);
+  transition: background var(--dur-state) var(--ease-out), color var(--dur-fast) var(--ease-out) calc(var(--dur-state) - var(--dur-fast)), border-color var(--dur-state) var(--ease-out);
+}
+.btn--ghost { background: transparent; color: currentColor; border-color: currentColor; }
+.btn--ghost:hover { background: transparent; color: var(--c-blue); border-color: var(--c-blue); }
+[data-surface="ink"] .btn--ghost { background: transparent; color: currentColor; border-color: currentColor; }
+
+/* U+2192 from Inter Tight. It inherits size, weight and colour, so it needs no
+   sizing of its own — only the transition it shares with its label. */
+.arw { display: inline-block; will-change: transform; }
+
+.btn__arrow,
+.link__arrow {
+  display: inline-flex;
+  overflow: hidden;
+  /* Reserves exactly the distance the glyph travels on hover, so the clip
+     edge never bites the arrowhead mid-travel — the wrapper is otherwise
+     sized tight to the glyph. */
+  padding-inline-end: var(--arrow-travel);
+  transition: transform var(--dur-state) var(--ease-out);
+}
+
+/* The shaft grows out of the label before the head moves — one gesture, not a
+   nudge. Previously the whole glyph jumped 6px, which read as a twitch. */
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  color: var(--accent);
+  font-weight: var(--w-medium);
+}
+.link .arw { transition: transform var(--dur-state) var(--ease-out); }
+.link:hover .arw,
+.link:focus-visible .arw { transform: translateX(var(--arrow-travel)); }
+
+/* An underline that draws from the left, rather than an opacity fade. */
+/* The underline grows from the left on the way in and retracts to the right on
+   the way out, so the gesture reads as directional rather than as a bar
+   appearing and disappearing in place. */
+.link::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -0.15em;
+  inset-inline: 0;
+  block-size: var(--rule-size);
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-state) var(--ease-out);
+}
+.link:hover::after,
+.link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+
+.btn:hover .arw,
+.btn:focus-visible .arw { transform: translateX(var(--arrow-travel)); }
+.btn .arw { transition: transform var(--dur-state) var(--ease-out); }
+
+/* Field hero ------------------------------------------------------------ */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--c-ink);
+  color: var(--c-paper-high);
+}
+.hero--field { min-block-size: 92svh; }
+
+/* Wordmark hero — the name at maximum scale across the foot of the photograph.
+   The type is the composition; the supporting copy sits above it, not over it. */
+.hero--wordmark { min-block-size: 100svh; }
+.hero > picture,
+.hero__media {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+.hero > picture { animation: hero-reveal var(--dur-scene) var(--ease-out) both; }
+.hero__media { object-fit: cover; }
+.hero__media[data-parallax] {
+  inset-block-start: calc(var(--parallax-overscan) * -1);
+  block-size: calc(100% + var(--parallax-overscan) * 2);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-raised);
+  background: var(--c-scrim-top), var(--c-scrim-bottom);
+  pointer-events: none;
+}
+.hero__inner {
+  position: absolute;
+  inset: 0;
+  z-index: calc(var(--z-raised) + 1);
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gap);
+  align-content: end;
+  padding-block: calc(var(--nav-h) + var(--s-8)) var(--s-8);
+}
+.hero__kicker { grid-column: 1 / -1; margin-block-end: auto; }
+.hero__inner .t-display { grid-column: 1 / span 9; }
+.hero__lead { grid-column: 1 / span 6; margin-block-start: var(--s-7); color: var(--c-paper-high); }
+
+.hero__descriptor { grid-column: 1 / span 6; align-self: end; }
+.hero__descriptor .t-h3 { max-inline-size: 24ch; }
+.hero__meta { display: flex; flex-wrap: wrap; gap: var(--s-5); margin-block-start: var(--s-6); color: var(--c-copy-inverse); }
+.hero__actions { grid-column: 1 / span 6; align-self: end; display: flex; gap: var(--s-4); margin-block-start: var(--s-7); }
+
+/* The wordmark spans the frame and sits on the foot of the composition. */
+.hero__mark { grid-column: 1 / -1; margin-block-start: var(--s-9); }
+.t-mega--hero { font-size: min(calc(100cqw / var(--fit, 7)), var(--t-mega-cap-hero)); }
+@keyframes hero-reveal { from { opacity: 0; } }
+
+/* Split and Record heroes ----------------------------------------------- */
+.page-hero { position: relative; isolation: isolate; background: var(--bg); color: var(--fg); }
+.page-hero__split { padding-block: var(--section-y) 0; align-items: end; }
+.page-hero__copy { grid-column: 1 / span 7; display: flex; flex-direction: column; }
+.page-hero__visual { grid-column: 9 / -1; overflow: hidden; aspect-ratio: var(--ar-portrait); }
+.page-hero__visual picture,
+.page-hero__image { inline-size: 100%; block-size: 100%; }
+.page-hero__image { object-fit: cover; }
+.page-hero__image[data-parallax],
+.page-hero__strip-image[data-parallax] { block-size: calc(100% + var(--parallax-overscan) * 2); margin-block-start: calc(var(--parallax-overscan) * -1); }
+.page-hero__visual:hover .page-hero__image { --image-scale: var(--image-hover); }
+.page-hero__copy .hero__kicker { margin-block-end: var(--s-7); color: var(--fg-muted); }
+.page-hero__copy .hero__lead { margin-block-start: var(--s-7); max-inline-size: var(--measure-lead); color: var(--fg-secondary); }
+.page-hero__copy .breadcrumb { margin-block-end: var(--s-9); }
+.page-hero__copy .hero__stats { margin-block-start: var(--s-9); }
+
+.page-hero--record { background: var(--bg); color: var(--fg); }
+.page-hero__record { padding-block: var(--section-y) var(--s-11); }
+.page-hero__record .page-hero__copy { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); }
+.page-hero__record .breadcrumb { grid-column: 1 / -1; margin-block-end: var(--s-9); }
+.page-hero__record .hero__kicker { grid-column: 1 / -1; }
+.page-hero__record .t-h1 { grid-column: 1 / span 8; }
+.page-hero__record .hero__lead { grid-column: 1 / span 6; margin-block-start: var(--s-7); color: var(--fg-secondary); }
+.page-hero__record .hero__stats {
+  grid-column: 10 / -1;
+  grid-row: 3 / span 2;
+  align-self: end;
+  text-align: right;
+}
+.page-hero__strip { position: relative; block-size: clamp(18rem, 46svh, 34rem); overflow: hidden; }
+.page-hero__strip picture,
+.page-hero__strip-image { inline-size: 100%; block-size: 100%; }
+.page-hero__strip-image { object-fit: cover; }
+
+[data-parallax] {
+  --image-scale: 1;
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+  scale: var(--image-scale);
+  transition: scale var(--dur-state) var(--ease-out);
+  will-change: transform;
+}
+
+.breadcrumb ol { display: flex; flex-wrap: wrap; gap: var(--s-2); color: var(--fg-muted); }
+.breadcrumb li + li::before { content: "/"; margin-inline-end: var(--s-2); }
+.hero__stats { display: grid; gap: var(--s-5); }
+.hero__stats li { display: grid; gap: var(--s-1); }
+.hero__stat-value { font-size: var(--t-h4); }
+.hero__stat-label { color: var(--fg-muted); }
+
+/* Reveal enhancement ---------------------------------------------------- */
+[data-reveal-ready] [data-reveal] {
+  opacity: 0;
+  transform: translateY(var(--reveal-travel));
+  transition: opacity var(--dur-reveal) var(--ease-out), transform var(--dur-reveal) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal-ready] [data-reveal][data-revealed="true"] { opacity: 1; transform: none; }
+
+/* Proof strip -----------------------------------------------------------
+   Four figures, separated by the grid gap. Previously four bordered cells. */
+.stats { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+
+/* Paired with prose: the figures take the right half as a 2 x 2 so the band has
+   a pole at each end instead of a dead right side. */
+.stats--paired { grid-column: 8 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; }
+.stat { display: grid; gap: var(--s-3); align-content: start; }
+.stat__label, .stat__note { color: var(--fg-muted); }
+.stat__value { order: -1; font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); }
+
+/* Specification rows ---------------------------------------------------- */
+.spec-list { grid-column: 1 / -1; display: grid; gap: var(--gap-list) var(--gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.spec-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2) var(--s-5); align-content: start; transition: color var(--dur-fast) var(--ease-out); }
+a.spec-row { transition: transform var(--dur-state) var(--ease-out), color var(--dur-state) var(--ease-out); }
+a.spec-row:hover, a.spec-row:focus-visible { color: var(--accent); transform: translateX(var(--row-travel)); }
+a.spec-row:hover .arw, a.spec-row:focus-visible .arw { transform: translateX(var(--arrow-travel)); }
+.spec-row__action .arw { transition: transform var(--dur-state) var(--ease-out); }
+.spec-row__index { color: var(--fg-muted); }
+.spec-row__name { font-size: var(--t-h4); font-weight: var(--w-medium); }
+.spec-row__desc { grid-column: 1; max-inline-size: var(--measure); color: var(--fg-secondary); }
+.spec-row__action { grid-row: 1; grid-column: 2; color: var(--accent); }
+
+/* Image components ------------------------------------------------------ */
+.cards { row-gap: var(--gap-row); }
+.card__frame { overflow: hidden; aspect-ratio: var(--ar-landscape); }
+.card__frame img { inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform var(--dur-state) var(--ease-out); }
+.card:hover .card__frame img { transform: scale(var(--image-hover)); }
+.card__head, .card__meta { display: flex; justify-content: space-between; gap: var(--s-4); margin-block-start: var(--s-5); }
+.card__meta { margin-block-start: var(--s-2); color: var(--fg-muted); }
+
+/* Mosaic: a dominant image and its supporting frames, separated by the gap. */
+.mosaic { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.mosaic__item { grid-column: span 1; }
+.mosaic__item--dominant { grid-column: span 2; }
+.mosaic__frame { overflow: hidden; aspect-ratio: var(--ar-square); }
+.mosaic__item--dominant .mosaic__frame { aspect-ratio: var(--ar-landscape); }
+.mosaic__frame img { inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform var(--dur-state) var(--ease-out); }
+.mosaic__item:hover .mosaic__frame img { transform: scale(var(--image-hover)); }
+.mosaic__caption { display: flex; justify-content: space-between; gap: var(--s-4); margin-block-start: var(--s-5); }
+.mosaic__caption .t-micro { color: var(--fg-muted); text-align: right; }
+
+.bleed { position: relative; isolation: isolate; overflow: hidden; aspect-ratio: var(--ar-wide); background: var(--c-ink); }
+.bleed > img,
+.bleed > picture { inline-size: 100%; block-size: calc(100% + var(--parallax-overscan) * 2); margin-block-start: calc(var(--parallax-overscan) * -1); object-fit: cover; will-change: transform; }
+.bleed > picture > img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+/* ── Video ───────────────────────────────────────────────────────────────────
+   One element, three modes, and in every one of them the POSTER is what the
+   layout is built on. The <video> is stacked underneath it and only ever
+   becomes visible once it is actually playing, so a frame is never blank, never
+   letterboxed black, and never shifts anything when the footage arrives.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.video { position: relative; isolation: isolate; overflow: hidden; block-size: 100%; }
+.video__el,
+.video__poster,
+.video picture { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+.video__poster { object-fit: cover; z-index: var(--z-raised); }
+.video__el { object-fit: cover; z-index: 0; background: var(--c-ink); }
+
+/* The crossfade. The poster does not disappear — it fades out over the footage
+   that has replaced it, so there is no flash of black between the two. */
+.video[data-video-playing] .video__poster,
+.video[data-video-playing] > picture { opacity: 0; transition: opacity var(--dur-scene) var(--ease-out); }
+.video:not([data-video-playing]) .video__el { opacity: 0; }
+
+/* Play control. Square, unfilled, no shadow — the same closed-control treatment
+   the strip's nav buttons get, which is the one place the design language still
+   allows an outline. Hidden when JavaScript is absent, where the browser's own
+   controls take over instead. */
+.video__play {
+  position: absolute;
+  z-index: var(--z-overlay);
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border: 0;
+  background: var(--c-ink);
+  color: var(--c-paper-high);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.video__play:hover,
+.video__play:focus-visible { background: var(--c-blue); }
+.video__play-mark {
+  inline-size: 0;
+  block-size: 0;
+  flex: none;
+  /* A triangle drawn from borders rather than shipped as an asset: it inherits
+     currentColor, so it changes with the button and costs no request. */
+  border-block: 0.4rem solid transparent;
+  border-inline-start: 0.65rem solid currentColor;
+  border-inline-end: 0;
+}
+.video[data-video-playing] .video__play { opacity: 0; pointer-events: none; }
+
+/* With no JavaScript the custom control cannot work, so it is removed and the
+   native controls — already on the element — are what the visitor uses. */
+.no-js .video__play { display: none; }
+.no-js .video__poster,
+.no-js .video > picture { pointer-events: none; }
+
+/* A bleed whose ground is footage. Same box as the photographic bleed; no
+   parallax overscan, because the image is already moving. */
+.bleed--video > .video { position: absolute; inset: 0; }
+
+/* Hero ground. */
+.hero__video { position: absolute; inset: 0; z-index: 0; }
+.hero__video .video__poster { animation: hero-reveal var(--dur-scene) var(--ease-out) both; }
+
+/* ── Clip row ────────────────────────────────────────────────────────────────
+   Vertical footage in a row of portrait frames — a silhouette no other band on
+   the site uses. Scrolls horizontally on narrow viewports for the same reason
+   the image strip does: four 9:16 frames will not fit a phone.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* The company film. Held inside the frame rather than run full-bleed: it is a
+   made thing with its own framing and its own logo bug, and bleeding it to the
+   viewport edge would crop both. */
+.feature-film {
+  inline-size: var(--frame-inline);
+  margin-inline: auto;
+}
+.feature-film .video { aspect-ratio: var(--ar-wide); }
+.feature-film__caption { margin-block-start: var(--s-4); color: var(--fg-muted); }
+
+.clip-row__label { inline-size: var(--frame-inline); margin-inline: auto; color: var(--fg-muted); margin-block-end: var(--s-6); }
+/* Edge to edge. The row is a field of moving footage, not a figure sitting in
+   the frame: it runs the full width of the viewport and the only structure
+   between the clips is the gap, which is the same 8px the image strip uses.
+   No negative margin is needed — .clip-row is an ordinary full-width child of
+   .section, so 100% already IS the viewport, and going near 100vw would add a
+   scrollbar's worth of horizontal overflow for nothing.
+
+   (`gap` previously read var(--gap-col), which is not a token this project
+   defines. It computed to `normal`, i.e. zero, so the four clips were touching.) */
+.clip-row__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--s-2);
+  /* The same 8px at the two outer edges as between the frames, so the row has
+     one rhythm rather than a gap in the middle and a hard cut at the ends —
+     and so no caption is set flush against the viewport edge. */
+  padding-inline: var(--s-2);
+}
+.clip-row__figure { display: grid; }
+.clip-row__video { aspect-ratio: var(--ar-clip); }
+.clip-row__caption { margin-block-start: var(--s-4); color: var(--fg-muted); transition: color var(--dur-state) var(--ease-out); }
+
+/* ── The row responds, not just the button ────────────────────────────────
+   The whole frame is the thing being offered, so the whole frame answers the
+   pointer: the row dims around the one being looked at (the photo-list device,
+   §9), that frame's poster takes the standard hover scale the cards and the
+   mosaic already use, its caption comes up out of muted, and the play control
+   stops being a chip sitting on a still and inverts to paper — the closed-
+   control treatment, saying it is armed. None of it is an accent: the blue is
+   still spent only on the button under the pointer, which is what keeps the
+   budget under 0.3%.
+
+   :focus-within carries the whole thing to the keyboard, because the play
+   button is the only focusable element in the frame and focusing it means
+   exactly what pointing at the frame means. */
+.clip-row__item { transition: opacity var(--dur-state) var(--ease-out); }
+.clip-row__track:hover .clip-row__item,
+.clip-row__track:focus-within .clip-row__item { opacity: 0.55; }
+/* Scoped through the track so this outweighs the dim above it, which is itself
+   three classes deep. `.clip-row__item:hover` alone is two, and lost. */
+.clip-row__track .clip-row__item:hover,
+.clip-row__track .clip-row__item:focus-within { opacity: 1; }
+
+.clip-row__video .video__poster { transition: transform var(--dur-state) var(--ease-out); }
+.clip-row__item:hover .video__poster,
+.clip-row__item:focus-within .video__poster { transform: scale(var(--image-hover)); }
+
+.clip-row__item:hover .clip-row__caption,
+.clip-row__item:focus-within .clip-row__caption { color: var(--fg); }
+
+.clip-row__item:hover .video__play,
+.clip-row__item:focus-within .video__play { background: var(--c-paper-high); color: var(--c-ink); }
+/* Direct contact still goes to blue, so the control has an answer of its own
+   rather than inheriting the frame's and appearing not to react at all. */
+.clip-row__item .video__play:hover,
+.clip-row__item .video__play:focus-visible { background: var(--c-blue); color: var(--c-paper-high); }
+.clip-row__foot { margin-block-start: var(--gap-row); }
+.clip-row__note { color: var(--fg-secondary); }
+.clip-row__action { grid-column: 9 / -1; justify-self: end; align-self: end; }
+
+/* Corner label plate. In the ruled system this shared two edges with the image
+   frame; with no rules left it is simply a paper block sitting in the corner. */
+.plate {
+  position: absolute;
+  z-index: var(--z-raised);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-block-size: var(--touch);
+  max-inline-size: min(var(--measure-lead), 80%);
+  padding: var(--s-3) var(--s-5);
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+.plate--start-end { inset-block-end: 0; inset-inline-start: 0; }
+.plate--start-start { inset-block-start: 0; inset-inline-start: 0; }
+.plate__index { color: var(--c-steel); }
+.plate--end-end { inset-block-end: 0; inset-inline-end: 0; }
+
+/* On a full-bleed figure the plate would otherwise hug the viewport edge. Inset
+   it to the frame so it lands on a column line like everything else. */
+.bleed .plate--end-end { inset-inline-end: calc((100% - var(--frame-inline)) / 2); }
+.bleed .plate--start-end,
+.bleed .plate--start-start { inset-inline-start: calc((100% - var(--frame-inline)) / 2); }
+.page-hero__strip .plate--end-end { inset-inline-end: calc((100% - var(--frame-inline)) / 2); }
+
+/* Sticky ledger ---------------------------------------------------------
+   position: sticky and nothing else — the media pane holds while the evidence
+   scrolls past it. No wheel handler, no pinning script, so native scrolling is
+   untouched and it works with JavaScript off. */
+.sticky-ledger { align-items: start; }
+
+.sticky-ledger__pane {
+  position: sticky;
+  inset-block-start: calc(var(--nav-h) + var(--s-6));
+  grid-column: 1 / span 5;
+  /* The hold lasts (scroll column - this). Six text rows give a ~940px
+     column, so a full-viewport pane would barely hold at all; 32rem keeps
+     a portrait crop and buys roughly 430px of hold. */
+  block-size: min(calc(100svh - var(--nav-h) - var(--s-10)), 32rem);
+  overflow: hidden;
+}
+
+.sticky-ledger__figure { position: relative; block-size: 100%; margin: 0; }
+.sticky-ledger__figure img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.sticky-ledger__scroll { grid-column: 7 / -1; display: grid; gap: var(--gap-list); }
+
+.sticky-ledger__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-3) var(--s-5);
+  transition: color var(--dur-state) var(--ease-out);
+}
+.sticky-ledger__row { transition: transform var(--dur-state) var(--ease-out), color var(--dur-state) var(--ease-out); }
+.sticky-ledger__row:hover,
+.sticky-ledger__row:focus-visible { color: var(--accent); transform: translateX(var(--row-travel)); }
+.sticky-ledger__index { color: var(--fg-muted); }
+.sticky-ledger__name { font-size: var(--t-h3); font-weight: var(--w-display); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
+.sticky-ledger__desc { grid-column: 1; max-inline-size: var(--measure); color: var(--fg-secondary); }
+.sticky-ledger__evidence { grid-column: 1; color: var(--fg-muted); }
+.sticky-ledger__action { grid-row: 1; grid-column: 2; align-self: start; transition: transform var(--dur-state) var(--ease-out); }
+.sticky-ledger__action .arw { transition: transform var(--dur-state) var(--ease-out); }
+.sticky-ledger__row:hover .arw,
+.sticky-ledger__row:focus-visible .arw { transform: translateX(var(--arrow-travel)); }
+
+/* Record list ----------------------------------------------------------
+   Halo's caption shape: title left, metadata right, on a shared baseline. */
+.record-list { grid-column: 1 / -1; display: grid; gap: var(--gap-list); }
+.record { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-3) var(--s-6); align-items: baseline; }
+.record__sn { color: var(--fg-muted); }
+.record__title { font-size: var(--t-h3); font-weight: var(--w-display); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
+.record__client { grid-column: 1; color: var(--fg-secondary); }
+.record__meta { grid-row: 1; grid-column: 2; display: grid; gap: var(--s-1); color: var(--fg-muted); text-align: right; }
+
+/* Tables and filter controls -------------------------------------------
+   The one place rules survive. A 189-row register without row separation is
+   not open, it is unreadable — the rule earns its place by making the data
+   scannable, which is the whole reason the page exists. */
+.register { grid-column: 1 / -1; min-inline-size: 0; overflow: visible; }
+.register__table { inline-size: 100%; border-collapse: collapse; table-layout: fixed; }
+.register__table caption { padding-block: var(--s-4); text-align: start; color: var(--fg-muted); }
+.register__table th,
+.register__table td { padding: var(--s-5) var(--s-4) var(--s-5) 0; border-block-end: var(--rule-size) solid var(--rule); text-align: start; vertical-align: top; }
+.register__table thead th { position: sticky; inset-block-start: var(--nav-h); z-index: var(--z-sticky); background: var(--bg); font-size: var(--t-micro); letter-spacing: var(--ls-data); text-transform: uppercase; }
+/* Column proportions apply only while this is laid out as a table. Below 48rem
+   the rows recompose as blocks and a percentage width would constrain the new
+   box instead — which is what made every cell overflow. */
+@media (min-width: 48rem) {
+  .register__table th:nth-child(1), .register__table td:nth-child(1) { inline-size: 7%; }
+  .register__table th:nth-child(2), .register__table td:nth-child(2) { inline-size: 22%; }
+  .register__table th:nth-child(3), .register__table td:nth-child(3) { inline-size: 34%; }
+  .register__table th:nth-child(4), .register__table td:nth-child(4) { inline-size: 16%; }
+}
+.register__group th { padding-block: var(--s-10) var(--s-4); background: var(--bg); color: var(--fg); font-size: var(--t-h3); font-weight: var(--w-display); letter-spacing: var(--ls-h3); }
+.register__group-count { float: inline-end; color: var(--fg-muted); font-size: var(--t-data); }
+/* The control that lifts the preview cap. It sits under the last visible row
+   and reads as the continuation of the table, so it takes the table's own left
+   edge rather than centring — the register is a document, not a feed. */
+.register-expand { grid-column: 1 / -1; margin-block-start: var(--s-8); }
+.register__more { padding-block: var(--s-6); }
+.register__more a { color: var(--accent); }
+.register__empty td { padding-block: var(--s-11); }
+
+.filter-bar { padding-block-end: var(--s-10); }
+.search__label { display: block; margin-block-end: var(--s-3); color: var(--fg-muted); }
+.search__input { inline-size: 100%; min-block-size: var(--control-h); padding-inline: var(--s-5); border: var(--rule-size) solid var(--rule); border-radius: var(--radius); background: var(--bg-raised); }
+.search__input:focus-visible { border-color: var(--c-blue); }
+.filters { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.filters__legend { inline-size: 100%; margin-block-end: var(--s-3); color: var(--fg-muted); }
+.chip { min-block-size: var(--touch); padding-inline: var(--s-4); border: var(--rule-size) solid var(--rule); background: transparent; cursor: pointer; transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.chip:hover { border-color: currentColor; }
+.chip[aria-pressed="true"] { background: var(--c-blue); color: var(--c-paper-high); border-color: var(--c-blue); }
+.chip__count { margin-inline-start: var(--s-2); opacity: 0.7; }
+.filters__status { margin-block-start: var(--s-5); color: var(--fg-muted); }
+.filters__reset { margin-inline-start: var(--s-3); border: 0; background: transparent; color: var(--accent); cursor: pointer; }
+
+/* Definitions, prose, logos --------------------------------------------- */
+.def-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.def { grid-column: span 2; display: grid; align-content: start; gap: var(--s-3); }
+.def-grid--third .def { grid-column: span 1; }
+.def__term { color: var(--fg-muted); }
+.def__value { font-size: var(--t-h4); line-height: var(--lh-lead); }
+.def__note { color: var(--fg-muted); }
+.prose { max-inline-size: var(--measure); }
+.prose p + p { margin-block-start: var(--s-5); }
+.note { grid-column: 1 / -1; color: var(--fg-secondary); }
+.logos { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
+.logo-cell { display: grid; place-items: center; min-block-size: 11rem; padding: var(--s-7); }
+.logo-cell img { max-block-size: 5rem; inline-size: auto; object-fit: contain; }
+
+/* CTA and footer -------------------------------------------------------- */
+.cta__lead { margin-block-start: var(--s-8); max-inline-size: var(--measure); }
+.cta__actions { display: flex; flex-wrap: wrap; gap: var(--s-4); margin-block-start: var(--s-9); }
+.cta__phones { display: flex; flex-wrap: wrap; gap: var(--s-6); margin-block-start: var(--s-8); color: var(--fg-muted); }
+
+.footer { padding-block: var(--section-y) var(--s-9); }
+.footer__col { grid-column: span 3; }
+.footer__col--wide { grid-column: span 4; }
+/* No plate. The mark's navy is unreadable on ink, so on the footer the navy
+   becomes paper and the red stays red — a two-colour lockup for a dark ground
+   rather than the same one pasted onto a white patch. The patch was the only
+   thing on the site that boxed an element off from its background. */
+/* One line: the mark, then the name it belongs to. The mark takes its size from
+   the name's cap height rather than a fixed rem, so the lockup stays a lockup
+   through the whole t-h3 clamp instead of coming apart at one end of it. */
+.footer__wordmark { display: flex; align-items: center; gap: var(--s-4); margin-block-end: var(--s-6); }
+.footer__mark-svg { flex: none; block-size: 1.9em; inline-size: 2.02em; font-size: var(--t-h3); --mark-blue: var(--c-paper-high); }
+.footer__mark { margin-block-end: 0; }
+.footer__head, .footer__label { display: block; margin-block-end: var(--s-5); color: var(--fg-muted); }
+.footer__item + .footer__item { margin-block-start: var(--s-3); }
+.footer__link:hover { color: var(--c-paper-high); }
+/* The same underline every other link on the site draws — grown from the left,
+   retracted to the right, and spanning the whole box, arrow included.
+   `text-decoration: underline` could do neither: it cannot be transitioned, and
+   it does not propagate into the arrow's wrapper, which is an atomic inline box.
+   So the footer's one arrow-bearing link underlined its words and stopped dead
+   at the glyph, which is the join the rule is supposed to hide. */
+.footer__link { position: relative; }
+.footer__link::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -0.15em;
+  inset-inline: 0;
+  block-size: var(--rule-size);
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-state) var(--ease-out);
+}
+.footer__link:hover::after,
+.footer__link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+/* The footer's "All locations" carries a .link__arrow and had no transition on
+   it — the only arrow on the site that jumped rather than travelled. */
+.footer__link .arw { transition: transform var(--dur-state) var(--ease-out); }
+.footer__link:hover .arw,
+.footer__link:focus-visible .arw { transform: translateX(var(--arrow-travel)); }
+.footer__bottom { grid-column: 1 / -1; display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--s-6); margin-block-start: var(--s-11); color: var(--fg-muted); }
+
+/* Responsive ------------------------------------------------------------ */
+@media (max-width: 74.99rem) {
+  /* The five shortcuts drop off; the Menu keeps every route, at every width. */
+  .nav__links { display: none; }
+  /* Hover is what drives the preview, and this is where the pointer stops being
+     the thing operating the menu. The tree and the contact details take the two
+     columns it was using. */
+  .nav-preview { display: none; }
+  .nav-tree { grid-column: 1 / span 7; }
+  .nav-panel__aside { grid-column: 9 / -1; }
+
+  .hero__inner { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .hero__kicker, .hero__inner .t-display, .hero__lead, .hero__actions { grid-column: 1 / -1; }
+  .hero__meta { grid-column: 1 / -1; grid-row: auto; text-align: start; margin-block-start: var(--s-7); }
+
+  .page-hero__copy { grid-column: 1 / -1; }
+  .page-hero__visual { grid-column: 1 / -1; aspect-ratio: var(--ar-landscape); margin-block-start: var(--gap-row); }
+  .page-hero__record .page-hero__copy { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .page-hero__record .t-h1, .page-hero__record .hero__lead { grid-column: 1 / -1; }
+  .page-hero__record .hero__stats { grid-column: 1 / -1; grid-row: auto; text-align: start; margin-block-start: var(--s-9); }
+
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats--paired { grid-column: 1 / -1; margin-block-start: var(--gap-row); }
+  .spec-list { grid-template-columns: minmax(0, 1fr); }
+  .mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mosaic__item--dominant { grid-column: span 2; }
+  .def-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .def, .def-grid--third .def { grid-column: span 1; }
+  .logos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .sticky-ledger__pane {
+    position: static;
+    grid-column: 1 / -1;
+    block-size: auto;
+    aspect-ratio: var(--ar-landscape);
+  }
+  .sticky-ledger__scroll { grid-column: 1 / -1; margin-block-start: var(--gap-row); }
+
+  .footer__col, .footer__col--wide { grid-column: span 6; }
+}
+
+@media (max-width: 47.99rem) {
+  /* Register: each row recomposes as a labelled record block. A fixed-layout
+     five-column table at 390px gives the client column about 86px, which is why
+     every cell was overflowing. Table semantics are preserved — only the visual
+     box model changes — and the header labels come from each cell's data-label
+     so nothing is duplicated in the markup. design-language.md §10.4. */
+  .register__table,
+  .register__table tbody,
+  .register__table tr,
+  .register__table td { display: block; inline-size: auto; }
+
+  /* A caption inside a block-level table inherits the first cell's width unless
+     it is told otherwise. */
+  .register__table caption { display: block; inline-size: 100%; max-inline-size: var(--measure); }
+
+  .register__table thead { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .register__table tbody tr { padding-block: var(--s-6); border-block-end: var(--rule-size) solid var(--rule); }
+  .register__table tbody tr.register__group { padding-block: var(--s-9) var(--s-3); border-block-end: 0; }
+  .register__group th { display: block; padding: 0; }
+
+  .register__table { table-layout: auto; }
+  .register__table td {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: var(--s-4);
+    padding: var(--s-1) 0;
+    border-block-end: 0;
+  }
+  .register__table td::before {
+    content: attr(data-label);
+    color: var(--fg-muted);
+    font-size: var(--t-micro);
+    font-weight: var(--w-medium);
+    letter-spacing: var(--ls-data);
+    text-transform: uppercase;
+    line-height: var(--lh-body);
+  }
+  .register__table td:nth-child(3) { font-size: var(--t-body); }
+  .register__empty td { display: block; }
+  .register__empty td::before { content: none; }
+
+  .nav { min-block-size: var(--nav-h-mobile); }
+  .nav__frame { min-block-size: var(--nav-h-mobile); }
+  .nav__brand-note, .nav__cta .btn__arrow { display: none; }
+  .nav__end { gap: var(--s-5); }
+  .nav-panel { inset-block-start: var(--nav-h-mobile); }
+  .nav-tree, .nav-panel__aside { grid-column: 1 / -1; }
+  .nav-panel__aside { margin-block-start: var(--s-9); grid-auto-flow: column; grid-auto-columns: 1fr; }
+
+  .hero--field, .hero--wordmark { min-block-size: min(96svh, 56rem); display: grid; align-items: end; }
+  /* Static, so the hero grows when the display type is taller than the minimum
+     instead of overflowing upward behind the navigation. */
+  .hero__inner {
+    position: relative;
+    display: block;
+    inline-size: var(--frame-inline);
+    margin-inline: auto;
+    padding-block: calc(var(--nav-h-mobile) + var(--s-8)) var(--s-9);
+  }
+  .hero__actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+  /* Two controls side by side on a 390px screen: the desktop gap and inline
+     padding push the label onto a second line. */
+  .btn { gap: var(--s-3); padding-inline: var(--s-4); }
+  .hero__meta { margin-block-start: var(--s-6); }
+
+  .page-hero__split, .page-hero__record { padding-block-start: var(--section-y-tight); }
+  .page-hero__strip { block-size: clamp(14rem, 40svh, 22rem); }
+
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mosaic { grid-template-columns: minmax(0, 1fr); }
+  .mosaic__item, .mosaic__item--dominant { grid-column: 1 / -1; }
+  .mosaic__item--dominant .mosaic__frame { aspect-ratio: var(--ar-landscape); }
+  .def-grid, .logos { grid-template-columns: minmax(0, 1fr); }
+  .def, .def-grid--third .def { grid-column: 1 / -1; }
+  .bleed { aspect-ratio: var(--ar-portrait); }
+
+  .sticky-ledger__row, .record { grid-template-columns: minmax(0, 1fr) auto; }
+  .spec-row { grid-template-columns: minmax(0, 1fr); }
+
+  .sticky-ledger__desc, .sticky-ledger__evidence, .record__client,
+  .spec-row__desc, .spec-row__action { grid-column: 1 / -1; }
+  .sticky-ledger__action { grid-row: 2; grid-column: 2; align-self: baseline; }
+  .record__meta { grid-row: auto; grid-column: 1 / -1; text-align: start; }
+  .plate { max-inline-size: 100%; padding: var(--s-3) var(--s-4); }
+
+  .footer__col, .footer__col--wide { grid-column: 1 / -1; }
+  .footer__bottom { display: grid; gap: var(--s-3); }
+}
+
+/* Figure band -----------------------------------------------------------
+   Four sourced figures at display scale, no heading above them. */
+.figures { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-row) var(--gap); }
+.figure { display: grid; gap: var(--s-4); align-content: start; }
+.figure__value { font-size: var(--t-figure); font-weight: var(--w-display); line-height: 0.86; letter-spacing: var(--ls-h2); }
+.figure__label { color: var(--fg-muted); }
+
+/* Inverted pole ---------------------------------------------------------
+   Small stacked label left, statement at display scale right. The mirror of the
+   two-pole band, so consecutive sections do not share a silhouette. */
+.pole__label { grid-column: 1 / span 2; display: grid; gap: var(--s-2); align-content: start; color: var(--fg-muted); }
+.pole__index { color: var(--accent); }
+[data-surface="ink"] .pole__index { color: var(--c-paper-high); }
+.pole__body { grid-column: 4 / -1; }
+.pole__statement {
+  font-size: var(--t-statement);
+  font-weight: var(--w-display);
+  line-height: 1.06;
+  letter-spacing: var(--ls-h2);
+  text-transform: uppercase;
+  text-wrap: pretty;
+}
+.pole__lead { max-inline-size: var(--measure); margin-block-start: var(--s-9); color: var(--fg-secondary); font-size: var(--t-lead); line-height: var(--lh-lead); }
+.pole__action { margin-block-start: var(--s-8); }
+
+/* List over photograph --------------------------------------------------
+   Kern's services band. Full-bleed photograph, one small label, and the list
+   itself centred at display scale. No heading, no lead, no trailing link. */
+.photo-list { position: relative; isolation: isolate; overflow: hidden; min-block-size: 92svh; display: grid; align-content: center; }
+.photo-list__media { position: absolute; inset: 0; z-index: -1; }
+.photo-list__frame { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+/* Only the frame for the pointed-at capability is opaque. Nothing moves; the
+   image behind the type changes. */
+.photo-list__frame--alt { opacity: 0; transition: opacity var(--dur-reveal) var(--ease-out); }
+.photo-list__frame--alt[data-active] { opacity: 1; }
+.photo-list::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgb(9 11 14 / 0.72);
+  pointer-events: none;
+}
+.photo-list__inner { position: relative; z-index: 1; text-align: center; padding-block: var(--section-y); }
+.photo-list__label { margin-block-end: var(--s-9); color: var(--c-copy-inverse); }
+.photo-list__items { display: grid; gap: var(--s-3); }
+.photo-list__item {
+  display: block;
+  font-size: var(--t-statement);
+  font-weight: var(--w-display);
+  line-height: 1.04;
+  letter-spacing: var(--ls-h2);
+  text-transform: uppercase;
+  text-wrap: balance;
+  transition: color var(--dur-state) var(--ease-out);
+}
+/* The list dims to let its own photograph through, and the pointed-at line
+   stays lit. The image change is the interaction; this only gets out of its way. */
+.photo-list__items:hover .photo-list__item,
+.photo-list__items:focus-within .photo-list__item { opacity: 0.42; }
+.photo-list__items li:hover .photo-list__item,
+.photo-list__items .photo-list__item:focus-visible { opacity: 1; }
+
+/* Capability grid ---------------------------------------------------------
+   GFS's Products & Applications grid. Equal full-bleed tiles, gapless. At rest
+   each carries only its name over a small legibility scrim; hover or focus
+   intensifies the scrim and brings the summary in beneath it — an overlay
+   fade, not a size change, so no other tile ever moves. */
+.capability-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+}
+.capability-grid__frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  color: var(--c-paper-high);
+}
+.capability-grid__frame img {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(var(--parallax-overscan) * -1);
+  inline-size: 100%;
+  block-size: calc(100% + var(--parallax-overscan) * 2);
+  object-fit: cover;
+}
+.capability-grid__frame:hover img,
+.capability-grid__frame:focus-visible img { --image-scale: var(--image-hover); }
+
+.capability-grid__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--c-scrim-bottom);
+  transition: background var(--dur-state) var(--ease-out);
+}
+.capability-grid__frame:hover .capability-grid__scrim,
+.capability-grid__frame:focus-visible .capability-grid__scrim {
+  background: linear-gradient(to top, rgb(17 20 24 / 0.88), rgb(17 20 24 / 0.4) 60%, rgb(17 20 24 / 0.05));
+}
+
+/* The summary sits in a track that is 0fr at rest, so it has zero height and
+   the name alone sits on the bottom edge. On hover the track grows to 1fr —
+   its natural height — and because the block is pinned to inset-block-end,
+   that growth pushes the name upward rather than fading text in underneath
+   a name that never moves. */
+.capability-grid__body {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: grid;
+  grid-template-rows: auto 0fr;
+  padding: var(--s-6);
+  transition: grid-template-rows var(--dur-state) var(--ease-out);
+}
+.capability-grid__frame:hover .capability-grid__body,
+.capability-grid__frame:focus-visible .capability-grid__body { grid-template-rows: auto 1fr; }
+.capability-grid__name { font-size: var(--t-h4); font-weight: var(--w-medium); }
+.capability-grid__summary { overflow: hidden; min-block-size: 0; }
+.capability-grid__summary > span {
+  display: block;
+  padding-block-start: var(--s-2);
+  max-inline-size: 32ch;
+  color: rgb(241 240 235 / 0.82);
+}
+
+/* No hover on touch — the summary stays open rather than being unreachable. */
+@media (hover: none) {
+  .capability-grid__scrim { background: linear-gradient(to top, rgb(17 20 24 / 0.88), rgb(17 20 24 / 0.4) 60%, rgb(17 20 24 / 0.05)); }
+  .capability-grid__body { grid-template-rows: auto 1fr; }
+}
+
+/* Image strip -----------------------------------------------------------
+   Halo's edge-to-edge photographic row, made scrollable. The track runs past
+   the frame on both sides and the next frame is always partly in view, so the
+   affordance is the composition itself.
+
+   The track is rendered three times — clones, real items, clones — so
+   behaviour.js's initStrips can loop past either end of the real set into
+   the identical-looking clones and silently rebase scrollLeft by one
+   set-width, which reads as one continuous loop instead of a snap back to
+   the start. Controls and autoplay call scrollTo on this same native
+   scroller; they do not replace it. Touch, trackpad, wheel and the no-JS
+   fallback all still work exactly as they did before any of this existed. */
+.strip {
+  inline-size: 100vw;
+  margin-inline: calc(50% - 50vw);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.strip::-webkit-scrollbar { display: none; }
+.strip:focus-visible { outline-offset: calc(var(--focus-size) * -2); }
+
+.strip__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 26rem;
+  gap: var(--s-2);
+  /* Not enough to centre the very first real frame — that one just clamps to
+     flush-left, which is also exactly the no-JS resting state. Every frame
+     from the second on has enough run-off on both sides (helped by the
+     cloned set) to centre properly once behaviour.js starts moving it. */
+  padding-inline: max(var(--frame-inset), calc((100vw - var(--frame-max)) / 2));
+  inline-size: max-content;
+}
+.strip__item {
+  scroll-snap-align: center;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+/* The active frame is whichever one behaviour.js finds nearest the viewport
+   centre — matched by the current dot below, not dimmed relative to its
+   neighbours (design-language.md §9: nothing fades the thing being pointed
+   at). Only the caption and a quiet 1.025 scale, the same amount hover
+   already uses everywhere else, mark it. */
+.strip__item--active .strip__caption { color: var(--fg); }
+.strip__item:hover .strip__frame img,
+.strip__item--active .strip__frame img { --image-scale: var(--image-hover); }
+
+.strip__controls { display: flex; align-items: center; justify-content: center; gap: var(--s-5); margin-block-start: var(--s-6); }
+.strip__nav {
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  flex: none;
+  border: var(--rule-size) solid var(--rule);
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.strip__nav:hover,
+.strip__nav:focus-visible { background: var(--c-blue); border-color: var(--c-blue); color: var(--c-paper-high); }
+.strip__dots { display: flex; align-items: center; gap: var(--s-3); }
+.strip__dot { inline-size: 0.5rem; block-size: 0.5rem; padding: 0; border: 0; background: var(--c-rule); cursor: pointer; }
+.strip__dot--active { background: var(--c-blue); }
+/* Dropped by a past rework and never replaced: with no aspect-ratio or
+   object-fit, each frame rendered at its raw source pixel height (as tall as
+   1280px) instead of a scaled 4:5 crop — the stretching, the jagged uneven
+   heights, and the excess scroll length were all this one missing rule. */
+.strip__frame { position: relative; overflow: hidden; aspect-ratio: var(--ar-portrait); }
+.strip__frame img {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(var(--parallax-overscan) * -1);
+  inline-size: 100%;
+  block-size: calc(100% + var(--parallax-overscan) * 2);
+  object-fit: cover;
+}
+.strip__item:hover .strip__frame img { --image-scale: var(--image-hover); }
+.strip__caption { margin-block-start: var(--s-4); color: var(--fg-muted); }
+.strip__foot { margin-block-start: var(--gap-row); }
+.strip__note { color: var(--fg-secondary); }
+.strip__action { grid-column: 9 / -1; justify-self: end; align-self: end; }
+
+@media (max-width: 74.99rem) {
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pole__label { grid-column: 1 / -1; }
+  .pole__body { grid-column: 1 / -1; margin-block-start: var(--s-7); }
+  .strip__track { grid-auto-columns: 21rem; }
+  .strip__action { grid-column: 1 / -1; justify-self: start; margin-block-start: var(--s-6); }
+  /* Four or five 9:16 frames divided into a tablet width give columns barely
+     wider than a thumbnail. Below the desktop breakpoint the row becomes a
+     scroller with a fixed frame width instead, the same resolution the image
+     strip uses for the same problem. */
+  .clip-row__track {
+    grid-auto-columns: 15rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    /* Snapping aligns items to the SNAPPORT, which is inset by scroll-padding
+       and not by padding. Without this the first snap scrolls the track by
+       exactly the 8px above and puts the leading frame hard against the
+       viewport edge. */
+    scroll-padding-inline: var(--s-2);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .clip-row__track::-webkit-scrollbar { display: none; }
+  .clip-row__item { scroll-snap-align: start; }
+  .clip-row__action { grid-column: 1 / -1; justify-self: start; margin-block-start: var(--s-6); }
+  .photo-list { min-block-size: 0; }
+  .capability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .hero__descriptor { grid-column: 1 / -1; }
+  .hero__actions { grid-column: 1 / -1; justify-self: start; margin-block-start: var(--s-8); }
+}
+
+@media (max-width: 47.99rem) {
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .strip__track { grid-auto-columns: 78vw; }
+  .clip-row__track { grid-auto-columns: 62vw; }
+  .feature-film .video { aspect-ratio: var(--ar-landscape); }
+  .photo-list__inner { text-align: start; }
+  .photo-list__items { gap: var(--s-5); }
+  .capability-grid { grid-template-columns: minmax(0, 1fr); }
+  .hero__mark { margin-block-start: var(--s-8); }
+}
