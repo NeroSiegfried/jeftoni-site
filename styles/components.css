@@ -933,6 +933,12 @@ a.spec-row:hover .arw, a.spec-row:focus-visible .arw { transform: translateX(var
   .register__table th:nth-child(2), .register__table td:nth-child(2) { inline-size: 22%; }
   .register__table th:nth-child(3), .register__table td:nth-child(3) { inline-size: 34%; }
   .register__table th:nth-child(4), .register__table td:nth-child(4) { inline-size: 16%; }
+  /* The compact evidence table has no S/N column, so the shares above would
+     give its Client column the 7% meant for S/N. Same proportions, S/N's
+     share spread across the four that remain. */
+  .register--compact .register__table th:nth-child(1), .register--compact .register__table td:nth-child(1) { inline-size: 24%; }
+  .register--compact .register__table th:nth-child(2), .register--compact .register__table td:nth-child(2) { inline-size: 37%; }
+  .register--compact .register__table th:nth-child(3), .register--compact .register__table td:nth-child(3) { inline-size: 17%; }
 }
 .register__group th { padding-block: var(--s-10) var(--s-4); background: var(--bg); color: var(--fg); font-size: var(--t-h3); font-weight: var(--w-display); letter-spacing: var(--ls-h3); }
 .register__group-count { float: inline-end; color: var(--fg-muted); font-size: var(--t-data); }
